@@ -1,0 +1,23 @@
+# helm install --dry-run  mongo -n mongo my-repo/mongodb --values=mongodb-values.yaml
+# helm install mongo -n mongo my-repo/mongodb --values=mongodb-values.yaml
+global:
+  storageClass: "hostpath"
+persistence:
+  size: 3Gi
+auth:
+  rootPassword: "root"
+  usernames:
+    - "plantation"
+  passwords:
+    - "plantation"
+  databases:
+    - "tea-plantation"
+service:
+  type: NodePort
+  nodePorts:
+    mongodb: "30001"
+#externalAccess:
+#  enabled: true
+#  service:
+#    type: NodePort
+#    nodePorts: ["30001"]
