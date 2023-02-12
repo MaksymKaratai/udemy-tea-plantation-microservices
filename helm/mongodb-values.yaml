@@ -3,7 +3,7 @@
 global:
   storageClass: "hostpath"
 persistence:
-  size: 3Gi
+  size: 1Gi
 auth:
   rootPassword: "root"
   usernames:

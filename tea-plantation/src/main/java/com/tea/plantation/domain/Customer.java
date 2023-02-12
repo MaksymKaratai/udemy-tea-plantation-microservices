@@ -14,10 +14,11 @@ import java.time.Instant;
 
 @Data
 @Builder
-@Document
 @NoArgsConstructor
 @AllArgsConstructor
+@Document(collection = Customer.MONGO_COLLECTION)
 public class Customer implements Identifiable<String> {
+    public static final String MONGO_COLLECTION = "customer";
     @Id
     private String id;
     private String name;

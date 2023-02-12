@@ -1,0 +1,12 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://root:root@localhost:30001/tea-plantation?authSource=admin
+      database: tea-plantation
+mongock:
+  transactionEnabled: true
+  migration-scan-package: com.tea.plantation.migration
+
+logging:
+  level:
+    root: info
