@@ -45,17 +45,14 @@ public class PlantationInitialMigration {
         var blackRock = Tea.builder()
                 .name("Black Rock")
                 .type("Pu-erh")
-                .upc(72527273070L)
                 .build();
         var spicyLunch = Tea.builder()
                 .name("Spicy lunch")
                 .type("Rooibos")
-                .upc(72527273071L)
                 .build();
         var matchaGreenPowder = Tea.builder()
                 .name("Match green powder")
                 .type("Match")
-                .upc(72527273072L)
                 .build();
         return List.of(blackRock, spicyLunch, matchaGreenPowder);
     }
