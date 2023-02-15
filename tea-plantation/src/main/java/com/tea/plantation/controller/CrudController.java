@@ -1,9 +1,8 @@
 package com.tea.plantation.controller;
 
 import com.tea.plantation.domain.Identifiable;
-import com.tea.plantation.exception.EntityNotFoundException;
+import com.tea.plantation.services.BasicService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,23 +16,23 @@ import java.net.URI;
 
 @RequiredArgsConstructor
 public abstract class CrudController<Dto extends Identifiable<DtoId>, DtoId> {
-    private final MongoRepository<Dto, DtoId> repo;
+    protected final BasicService<?, Dto, DtoId> service;
 
     @GetMapping("/{id}")
     public ResponseEntity<Dto> getById(@PathVariable DtoId id) {
-        var dto = repo.findById(id).orElseThrow(() -> new EntityNotFoundException(location(id)));
+        Dto dto = service.findById(id);
         return ResponseEntity.ok(dto);
     }
 
     @PostMapping
     public ResponseEntity<Dto> create(@Validated @RequestBody Dto dto) {
-        var saved = repo.save(dto);
+        Dto saved = service.create(dto);
         return ResponseEntity.created(location(saved.getId())).body(saved);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable DtoId id) {
-        repo.deleteById(id);
+        service.delete(id);
         return ResponseEntity.noContent().build();
     }
 

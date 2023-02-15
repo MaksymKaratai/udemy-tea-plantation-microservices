@@ -3,10 +3,11 @@ spring:
     mongodb:
       uri: mongodb://root:root@localhost:30001/tea-plantation?authSource=admin
       database: tea-plantation
+      uuid-representation: standard
 mongock:
   transactionEnabled: false
   migration-scan-package: com.tea.plantation.migration
 
 logging:
   level:
-    root: debug
+    root: info

@@ -1,8 +1,8 @@
 package com.tea.plantation.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tea.plantation.domain.Customer;
-import com.tea.plantation.repository.CustomerRepository;
+import com.tea.plantation.dto.CustomerDto;
+import com.tea.plantation.services.CustomerService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -11,9 +11,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
-import java.util.Optional;
-
 import static com.tea.plantation.controller.CustomerController.CUSTOMER_API;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -32,7 +29,7 @@ class CustomerControllerTest {
     @Autowired
     ObjectMapper objectMapper;
     @MockBean
-    CustomerRepository customerRepository;
+    CustomerService customerService;
 
     @Test
     void getById() throws Exception {
@@ -41,7 +38,7 @@ class CustomerControllerTest {
         customer.setId(id);
         var customerJson = objectMapper.writeValueAsString(customer);
 
-        when(customerRepository.findById(id)).thenReturn(Optional.of(customer));
+        when(customerService.findById(id)).thenReturn(customer);
 
         mockMvc.perform(get(CUSTOMER_API + "/" + id))
                 .andDo(log())
@@ -56,7 +53,7 @@ class CustomerControllerTest {
         var customerJson = objectMapper.writeValueAsString(customer);
         customer.setId(id);
 
-        when(customerRepository.save(any())).thenReturn(customer);
+        when(customerService.create(any())).thenReturn(customer);
 
         mockMvc.perform(post(CUSTOMER_API).contentType(MediaType.APPLICATION_JSON).content(customerJson))
                 .andDo(log())
@@ -68,14 +65,14 @@ class CustomerControllerTest {
     void deleteById() throws Exception {
         var id = "1";
 
-        doNothing().when(customerRepository).deleteById(id);
+        doNothing().when(customerService).delete(id);
 
         mockMvc.perform(delete(CUSTOMER_API + "/" + id))
                 .andDo(log())
                 .andExpect(status().isNoContent());
     }
 
-    private Customer testCustomer() {
-        return Customer.builder().name("Vanco shop").build();
+    private CustomerDto testCustomer() {
+        return CustomerDto.builder().name("Vanco shop").build();
     }
 }
