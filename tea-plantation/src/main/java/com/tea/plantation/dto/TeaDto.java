@@ -9,8 +9,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.UUID;
-
 @Getter
 @Setter
 @Builder
@@ -20,7 +18,7 @@ public class TeaDto implements Identifiable<String> {
     @Null
     private String id;
     @Null // plantation service generate uuid for tea
-    private UUID uuid;
+    private String uuid;
     @NotBlank
     private String name;
     @NotBlank
