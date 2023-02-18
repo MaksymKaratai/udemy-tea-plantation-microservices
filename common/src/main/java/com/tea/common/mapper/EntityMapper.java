@@ -1,4 +1,4 @@
-package com.tea.plantation.mapper;
+package com.tea.common.mapper;
 
 public interface EntityMapper<Entity, Dto> {
     Dto toDto(Entity entity);

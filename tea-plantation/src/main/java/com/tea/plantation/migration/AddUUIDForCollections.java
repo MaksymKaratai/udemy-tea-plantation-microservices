@@ -1,10 +1,10 @@
 package com.tea.plantation.migration;
 
 import com.mongodb.client.result.UpdateResult;
+import com.tea.common.domain.Identifiable;
+import com.tea.common.domain.UUIDEntity;
 import com.tea.plantation.domain.Customer;
-import com.tea.plantation.domain.Identifiable;
 import com.tea.plantation.domain.Tea;
-import com.tea.plantation.domain.UUIDEntity;
 import io.mongock.api.annotations.ChangeUnit;
 import io.mongock.api.annotations.Execution;
 import io.mongock.api.annotations.RollbackExecution;

@@ -1,4 +1,4 @@
-package com.tea.plantation.domain;
+package com.tea.common.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

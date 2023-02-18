@@ -1,4 +1,4 @@
-package com.tea.plantation.exception;
+package com.tea.common.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;

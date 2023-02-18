@@ -1,5 +1,6 @@
 package com.tea.plantation.mapper;
 
+import com.tea.common.mapper.EntityMapper;
 import com.tea.plantation.domain.Tea;
 import com.tea.plantation.dto.TeaDto;
 import org.mapstruct.Mapper;

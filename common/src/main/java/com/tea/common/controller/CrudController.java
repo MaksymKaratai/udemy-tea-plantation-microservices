@@ -1,7 +1,7 @@
-package com.tea.plantation.controller;
+package com.tea.common.controller;
 
-import com.tea.plantation.domain.Identifiable;
-import com.tea.plantation.services.BasicService;
+import com.tea.common.domain.Identifiable;
+import com.tea.common.services.BasicService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -16,7 +16,7 @@ import java.net.URI;
 
 @RequiredArgsConstructor
 public abstract class CrudController<Dto extends Identifiable<DtoId>, DtoId> {
-    protected final BasicService<?, Dto, DtoId> service;
+    protected final BasicService<?, Dto, DtoId, ?> service;
 
     @GetMapping("/{id}")
     public ResponseEntity<Dto> getById(@PathVariable DtoId id) {

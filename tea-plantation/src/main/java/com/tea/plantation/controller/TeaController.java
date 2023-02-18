@@ -1,5 +1,6 @@
 package com.tea.plantation.controller;
 
+import com.tea.common.controller.CrudController;
 import com.tea.plantation.dto.TeaDto;
 import com.tea.plantation.services.TeaService;
 import org.springframework.web.bind.annotation.RequestMapping;

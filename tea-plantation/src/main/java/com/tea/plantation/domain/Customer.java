@@ -1,5 +1,7 @@
 package com.tea.plantation.domain;
 
+import com.tea.common.domain.Identifiable;
+import com.tea.common.domain.UUIDEntity;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

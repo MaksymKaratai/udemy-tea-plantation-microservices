@@ -1,4 +1,4 @@
-package com.tea.plantation;
+package com.tea.common;
 
 
 public final class Constants {

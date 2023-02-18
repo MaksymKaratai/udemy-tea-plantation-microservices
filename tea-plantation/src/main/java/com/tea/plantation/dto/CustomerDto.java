@@ -1,6 +1,6 @@
 package com.tea.plantation.dto;
 
-import com.tea.plantation.domain.Identifiable;
+import com.tea.common.domain.Identifiable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Null;
 import lombok.AllArgsConstructor;

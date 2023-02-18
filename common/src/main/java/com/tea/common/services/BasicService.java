@@ -1,20 +1,22 @@
-package com.tea.plantation.services;
+package com.tea.common.services;
 
-import com.tea.plantation.exception.EntityNotFoundException;
-import com.tea.plantation.mapper.EntityMapper;
+import com.tea.common.mapper.EntityMapper;
+import com.tea.common.exception.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.repository.ListCrudRepository;
+import org.springframework.data.repository.ListPagingAndSortingRepository;
 
 import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
-public abstract class BasicService<Entity, Dto, Id> {
+public abstract class BasicService<Entity, Dto, Id,
+        Repo extends ListCrudRepository<Entity, Id> & ListPagingAndSortingRepository<Entity, Id>> {
     protected final EntityMapper<Entity, Dto> mapper;
-    protected final MongoRepository<Entity, Id> repository;
+    protected final Repo repository;
 
     public List<Dto> findAll(Pageable pageable) {
         Page<Entity> all = repository.findAll(pageable);
