@@ -1,0 +1,17 @@
+# helm repo add my-repo https://charts.bitnami.com/bitnami
+# helm install --dry-run postgres -n postgres my-repo/postgresql --values=postgres-values.yaml
+# helm install postgres -n postgres my-repo/postgresql --values=postgres-values.yaml
+#
+global:
+  storageClass: "hostpath"
+primary:
+  persistence:
+    size: 2Gi
+  service:
+    type: NodePort
+    nodePorts:
+      postgresql: 30002
+auth:
+  postgresPassword: postgres
+  username: order-user
+  password: ord!@#

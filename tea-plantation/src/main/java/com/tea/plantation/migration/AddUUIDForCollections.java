@@ -3,7 +3,6 @@ package com.tea.plantation.migration;
 import com.mongodb.client.result.UpdateResult;
 import com.tea.common.domain.Identifiable;
 import com.tea.common.domain.UUIDEntity;
-import com.tea.plantation.domain.Customer;
 import com.tea.plantation.domain.Tea;
 import io.mongock.api.annotations.ChangeUnit;
 import io.mongock.api.annotations.Execution;
@@ -36,8 +35,6 @@ public class AddUUIDForCollections {
         addUUID(Tea.class);
         createIndex(Tea.class);
         unsetField(Tea.class, UPC_FIELD);
-        addUUID(Customer.class);
-        createIndex(Customer.class);
     }
 
     private <ID, E extends UUIDEntity & Identifiable<ID>> void addUUID(Class<E> documentClass) {
@@ -60,9 +57,7 @@ public class AddUUIDForCollections {
     @RollbackExecution
     public void rollbackAddUUID() {
         log.warn("Running rollback for AddUUIDForCollections!");
-        dropIndex(Customer.class);
         dropIndex(Tea.class);
-        unsetField(Customer.class, UUID_FIELD);
         unsetField(Tea.class, UUID_FIELD);
         log.warn("Finished rollback for AddUUIDForCollections");
     }

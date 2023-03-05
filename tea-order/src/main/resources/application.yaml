@@ -1,0 +1,13 @@
+spring:
+  jpa:
+    open-in-view: off
+    hibernate:
+      ddl-auto: create
+  datasource:
+    url: jdbc:postgresql://localhost:30002/tea?currentSchema=order-service
+    username: order-user
+    password: ord!@#
+
+logging:
+  level:
+    root: info
