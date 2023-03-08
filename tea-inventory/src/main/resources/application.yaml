@@ -1,0 +1,13 @@
+spring:
+  jpa:
+    open-in-view: off
+    hibernate:
+      ddl-auto: none
+  datasource:
+    url: jdbc:postgresql://localhost:30002/tea?currentSchema=inventory-service
+    username: inventory-user
+    password: inv!@#
+
+logging:
+  level:
+    root: info

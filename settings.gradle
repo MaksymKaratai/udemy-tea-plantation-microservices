@@ -3,3 +3,4 @@ rootProject.name = 'plantation'
 includeBuild('common')
 includeBuild('tea-plantation')
 includeBuild('tea-order')
+includeBuild('tea-inventory')

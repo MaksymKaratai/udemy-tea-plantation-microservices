@@ -1,4 +1,4 @@
-package com.tea.order;
+package com.tea.inventory;
 
 import com.tea.common.exception.CommonControllerExceptionHandler;
 import org.springframework.boot.SpringApplication;
@@ -9,8 +9,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EnableJpaAuditing
 @SpringBootApplication
 @Import(value = {CommonControllerExceptionHandler.class})
-public class TeaOrderApplication {
+public class TeaInventoryApplication {
 	public static void main(String[] args) {
-		SpringApplication.run(TeaOrderApplication.class, args);
+		SpringApplication.run(TeaInventoryApplication.class, args);
 	}
 }
