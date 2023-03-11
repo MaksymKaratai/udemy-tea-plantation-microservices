@@ -1,6 +1,6 @@
 package com.tea.inventory.controller;
 
-import com.tea.inventory.dto.TeaInventoryDto;
+import com.tea.common.dto.inventory.TeaInventoryDto;
 import com.tea.inventory.services.TeaInventoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,10 +1,9 @@
-package com.tea.inventory.dto;
+package com.tea.common.dto.inventory;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.tea.common.Constants;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
-import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +11,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -39,11 +37,6 @@ public class TeaInventoryDto {
     @Null
     @JsonFormat(pattern = Constants.DATE_TIME_FORMAT, timezone = Constants.UTC_TIMEZONE, shape = JsonFormat.Shape.STRING)
     private Instant updateDate;
-
-    @Positive
-    @NotNull
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private BigDecimal price;
 
     @NotNull
     private Integer quantityOnHand;

@@ -2,7 +2,7 @@ package com.tea.inventory.mapper;
 
 import com.tea.common.mapper.EntityMapper;
 import com.tea.inventory.domain.TeaInventory;
-import com.tea.inventory.dto.TeaInventoryDto;
+import com.tea.common.dto.inventory.TeaInventoryDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 

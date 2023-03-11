@@ -15,7 +15,6 @@ import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -47,6 +46,4 @@ public class TeaInventory implements Identifiable<UUID> {
     private Instant updateDate;
 
     private Integer quantityOnHand;
-
-    private BigDecimal price;
 }
