@@ -3,10 +3,18 @@ package com.tea.plantation.mapper;
 import com.tea.common.mapper.EntityMapper;
 import com.tea.plantation.domain.Tea;
 import com.tea.plantation.dto.TeaDto;
+import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface TeaMapper extends EntityMapper<Tea, TeaDto> {
+    @Override
+    @Mapping(target = "teaId", source = "uuid")
+    TeaDto toDto(Tea tea);
 
+    @Override
+    @InheritInverseConfiguration
+    Tea toEntity(TeaDto teaDto);
 }

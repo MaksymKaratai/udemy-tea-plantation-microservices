@@ -1,6 +1,5 @@
 package com.tea.plantation.migration;
 
-import com.mongodb.client.result.UpdateResult;
 import com.tea.common.domain.Identifiable;
 import com.tea.common.domain.UUIDEntity;
 import com.tea.plantation.domain.Tea;
@@ -10,12 +9,6 @@ import io.mongock.api.annotations.RollbackExecution;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.index.IndexOperations;
-import org.springframework.data.mongodb.core.index.TextIndexDefinition;
-import org.springframework.data.mongodb.core.index.TextIndexDefinition.TextIndexDefinitionBuilder;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 
 import java.util.List;
 import java.util.UUID;
@@ -33,8 +26,8 @@ public class AddUUIDForCollections {
     @Execution
     public void addUUID() {
         addUUID(Tea.class);
-        createIndex(Tea.class);
-        unsetField(Tea.class, UPC_FIELD);
+        MigrationUtils.createIndex(mongoTemplate, Tea.class, UUID_FIELD, UUID_INDEX);
+        MigrationUtils.unsetField(mongoTemplate, Tea.class, UPC_FIELD);
     }
 
     private <ID, E extends UUIDEntity & Identifiable<ID>> void addUUID(Class<E> documentClass) {
@@ -48,34 +41,11 @@ public class AddUUIDForCollections {
         log.info("Finished collection[{}] update", documentClass);
     }
 
-    private <E extends UUIDEntity> void createIndex(Class<E> documentClass) {
-        TextIndexDefinition index = new TextIndexDefinitionBuilder().onField(UUID_FIELD).named(UUID_INDEX).build();
-        mongoTemplate.indexOps(documentClass).ensureIndex(index);
-        log.info("Created index for class[{}] with name[{}]", documentClass, UUID_INDEX);
-    }
-
     @RollbackExecution
     public void rollbackAddUUID() {
         log.warn("Running rollback for AddUUIDForCollections!");
-        dropIndex(Tea.class);
-        unsetField(Tea.class, UUID_FIELD);
+        MigrationUtils.dropIndex(mongoTemplate, Tea.class, UUID_INDEX);
+        MigrationUtils.unsetField(mongoTemplate, Tea.class, UUID_FIELD);
         log.warn("Finished rollback for AddUUIDForCollections");
-    }
-
-    private <E extends UUIDEntity> void dropIndex(Class<E> documentClass) {
-        IndexOperations indexOperations = mongoTemplate.indexOps(documentClass);
-        boolean present = indexOperations.getIndexInfo().stream().anyMatch(index -> UUID_INDEX.equals(index.getName()));
-        if (present) {
-            indexOperations.dropIndex(UUID_INDEX);
-        }
-    }
-
-    private <E extends UUIDEntity> void unsetField(Class<E> documentClass, String field) {
-        var query = new Query();
-        query.addCriteria(Criteria.where(field).exists(true));
-        var update = new Update();
-        update.unset(field);
-        UpdateResult result = mongoTemplate.updateMulti(query, update, documentClass);
-        log.info("Finished unset for field[{}] for class[{}], modified[{}]", field, documentClass, result.getModifiedCount());
     }
 }

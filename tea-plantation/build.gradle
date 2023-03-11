@@ -30,6 +30,7 @@ dependencies {
 	implementation 'io.mongock:mongodb-springdata-v4-driver'
 
 	implementation 'org.mapstruct:mapstruct:1.5.3.Final'
+	implementation 'net.datafaker:datafaker:1.8.0'
 
 	compileOnly 'org.projectlombok:lombok'
 
