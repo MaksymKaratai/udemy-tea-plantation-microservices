@@ -2,12 +2,14 @@ package com.tea.common.domain;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 import java.time.Instant;
 import java.util.UUID;
 
+@NoArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
 public abstract class UUIDEntity extends Auditable {
@@ -18,10 +20,5 @@ public abstract class UUIDEntity extends Auditable {
 
     public UUIDEntity(Instant createDate, Instant updateDate, Integer version) {
         super(createDate, updateDate, version);
-        uuid = UUID.randomUUID();
-    }
-
-    public UUIDEntity() {
-        uuid = UUID.randomUUID();
     }
 }

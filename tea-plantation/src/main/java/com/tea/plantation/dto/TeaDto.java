@@ -34,4 +34,7 @@ public class TeaDto implements Identifiable<String> {
     @Positive
     @NotNull
     private BigDecimal price;
+
+    @Null // available from inventory service
+    private Integer quantityOnHand;
 }

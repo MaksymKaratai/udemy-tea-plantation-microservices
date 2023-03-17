@@ -15,8 +15,9 @@ import java.net.URI;
 
 
 @RequiredArgsConstructor
-public abstract class CrudController<Dto extends Identifiable<DtoId>, DtoId> {
-    protected final BasicService<?, Dto, DtoId, ?> service;
+public abstract class CrudController<Dto extends Identifiable<DtoId>, DtoId,
+                                     Service extends BasicService<?, Dto, DtoId, ?>> {
+    protected final Service service;
 
     @GetMapping("/{id}")
     public ResponseEntity<Dto> getById(@PathVariable DtoId id) {

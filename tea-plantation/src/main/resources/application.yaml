@@ -8,6 +8,11 @@ mongock:
   transactionEnabled: false
   migration-scan-package: com.tea.plantation.migration
 
+tea:
+  inventory:
+    host: 'http://localhost:8082'
+    endpoint: '/v1/inventory/tea/{teaId}'
+
 logging:
   level:
     root: info
