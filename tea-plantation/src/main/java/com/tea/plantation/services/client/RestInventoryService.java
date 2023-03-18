@@ -1,4 +1,4 @@
-package com.tea.plantation.services;
+package com.tea.plantation.services.client;
 
 import com.tea.common.dto.inventory.TeaInventoryDto;
 import com.tea.common.exception.UnsuccessfulResponseException;

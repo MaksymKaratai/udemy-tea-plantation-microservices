@@ -16,3 +16,8 @@ tea:
 logging:
   level:
     root: info
+    org:
+      apache:
+        hc:
+          client5:
+            http: debug

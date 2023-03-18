@@ -6,6 +6,7 @@ import com.tea.plantation.domain.Tea;
 import com.tea.plantation.dto.TeaDto;
 import com.tea.plantation.mapper.TeaMapper;
 import com.tea.plantation.repository.TeaRepository;
+import com.tea.plantation.services.client.InventoryService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
