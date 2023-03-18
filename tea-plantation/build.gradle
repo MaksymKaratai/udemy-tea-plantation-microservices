@@ -1,7 +1,7 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.0.2'
-	id 'io.spring.dependency-management' version '1.1.0'
+	alias libs.plugins.spring.boot
+	alias libs.plugins.spring.dependency.management
 }
 
 group = 'com.tea'
@@ -21,26 +21,26 @@ repositories {
 dependencies {
 	implementation 'com.tea:common'
 
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+	implementation libs.spring.boot.starter.web
+	implementation libs.spring.boot.starter.validation
+	implementation libs.spring.boot.starter.data.mongodb
 
-	implementation(platform('io.mongock:mongock-bom:5.2.2'))
-	implementation 'io.mongock:mongock-springboot-v3'
-	implementation 'io.mongock:mongodb-springdata-v4-driver'
+	implementation platform(libs.mongock.bom)
+	implementation libs.mongock.springboot
+	implementation libs.mongock.driver
 
-	implementation 'org.mapstruct:mapstruct:1.5.3.Final'
-	implementation 'net.datafaker:datafaker:1.8.0'
-	implementation 'org.apache.commons:commons-collections4:4.4'
+	implementation libs.mapstruct
+	implementation libs.datafaker
+	implementation libs.commons.collections4
 
-	compileOnly 'org.projectlombok:lombok'
+	compileOnly libs.lombok
 
-	annotationProcessor 'org.projectlombok:lombok'
-	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+	annotationProcessor libs.lombok
+	annotationProcessor libs.mapstruct.processor
 
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	developmentOnly libs.devtools
 
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation libs.spring.boot.starter.test
 }
 
 tasks.named('test') {

@@ -12,6 +12,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.math.BigDecimal;
+
 import static com.tea.plantation.controller.TeaController.TEA_API;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -36,12 +38,12 @@ class TeaControllerTest {
 
     @Test
     void getById() throws Exception {
-        var customer = testTea();
+        var tea = testTea();
         var id = "1";
-        customer.setId(id);
-        var customerJson = objectMapper.writeValueAsString(customer);
+        tea.setId(id);
+        var customerJson = objectMapper.writeValueAsString(tea);
 
-        when(teaService.findById(id)).thenReturn(customer);
+        when(teaService.findById(id)).thenReturn(tea);
 
         mockMvc.perform(get(TEA_API + "/" + id))
                 .andDo(log())
@@ -51,12 +53,12 @@ class TeaControllerTest {
 
     @Test
     void create() throws Exception {
-        var customer = testTea();
+        var tea = testTea();
         var id = "1";
-        var customerJson = objectMapper.writeValueAsString(customer);
-        customer.setId(id);
+        var customerJson = objectMapper.writeValueAsString(tea);
+        tea.setId(id);
 
-        when(teaService.create(any())).thenReturn(customer);
+        when(teaService.create(any())).thenReturn(tea);
 
         mockMvc.perform(post(TEA_API).contentType(MediaType.APPLICATION_JSON).content(customerJson))
                 .andDo(log())
@@ -76,6 +78,11 @@ class TeaControllerTest {
     }
 
     private TeaDto testTea() {
-        return TeaDto.builder().name("White Dragon").type("Plain").build();
+        return TeaDto.builder()
+                .name("White Dragon")
+                .type("Plain")
+                .upc("12345678")
+                .price(BigDecimal.valueOf(1))
+                .build();
     }
 }

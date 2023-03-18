@@ -1,1 +1,9 @@
 rootProject.name = 'tea-plantation'
+
+dependencyResolutionManagement {
+    versionCatalogs {
+        libs {
+            from(files("../libs.versions.toml"))
+        }
+    }
+}
