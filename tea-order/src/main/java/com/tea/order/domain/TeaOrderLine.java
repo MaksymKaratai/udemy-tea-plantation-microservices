@@ -1,6 +1,8 @@
 package com.tea.order.domain;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,6 +22,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class TeaOrderLine extends JpaEntity {
     private UUID teaId;
     private String teaUpc;

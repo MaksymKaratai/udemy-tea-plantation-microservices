@@ -3,6 +3,8 @@ package com.tea.order.domain;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
@@ -26,6 +28,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class TeaOrder extends JpaEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Customer customer;
