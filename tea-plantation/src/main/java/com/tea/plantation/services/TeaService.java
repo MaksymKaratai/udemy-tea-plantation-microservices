@@ -3,7 +3,7 @@ package com.tea.plantation.services;
 import com.tea.common.exception.EntityNotFoundException;
 import com.tea.common.services.BasicService;
 import com.tea.plantation.domain.Tea;
-import com.tea.plantation.dto.TeaDto;
+import com.tea.common.dto.plantation.TeaDto;
 import com.tea.plantation.mapper.TeaMapper;
 import com.tea.plantation.repository.TeaRepository;
 import com.tea.plantation.services.client.InventoryService;

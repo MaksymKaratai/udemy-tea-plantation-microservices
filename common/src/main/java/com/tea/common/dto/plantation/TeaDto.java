@@ -1,4 +1,4 @@
-package com.tea.plantation.dto;
+package com.tea.common.dto.plantation;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.tea.common.domain.Identifiable;

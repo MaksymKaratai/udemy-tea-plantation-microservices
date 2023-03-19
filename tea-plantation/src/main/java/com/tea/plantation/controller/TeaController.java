@@ -2,7 +2,7 @@ package com.tea.plantation.controller;
 
 import com.tea.common.controller.CrudController;
 import com.tea.common.utils.PageableUtils;
-import com.tea.plantation.dto.TeaDto;
+import com.tea.common.dto.plantation.TeaDto;
 import com.tea.plantation.services.TeaService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -39,7 +39,7 @@ public class TeaOrderController {
         return ResponseEntity.ok(orders);
     }
 
-    @RequestMapping("/{orderId}")
+    @GetMapping("/{orderId}")
     public ResponseEntity<TeaOrderDto> getOrder(@PathVariable UUID orderId) {
         TeaOrderDto order = orderService.findOrder(orderId);
         return ResponseEntity.ok(order);

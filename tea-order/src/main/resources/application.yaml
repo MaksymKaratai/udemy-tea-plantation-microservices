@@ -11,6 +11,14 @@ spring:
 server:
   port: 8081
 
+tea:
+  plantation:
+    host: 'http://localhost:8080'
+    endpoint: '/v1/tea/uuid/{teaUuid}'
+
 logging:
   level:
     root: info
+    com:
+      tea:
+        order: debug

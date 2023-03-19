@@ -1,7 +1,7 @@
 package com.tea.plantation.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tea.plantation.dto.TeaDto;
+import com.tea.common.dto.plantation.TeaDto;
 import com.tea.plantation.services.TeaService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

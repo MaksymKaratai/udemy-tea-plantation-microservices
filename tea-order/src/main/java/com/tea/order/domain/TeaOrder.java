@@ -15,12 +15,13 @@ import lombok.ToString;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(callSuper = true)
@@ -29,7 +30,6 @@ public class TeaOrder extends JpaEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Customer customer;
 
-    @Builder.Default
     private OrderStatus orderStatus = OrderStatus.NEW;
 
     @ToString.Exclude
@@ -37,4 +37,13 @@ public class TeaOrder extends JpaEntity {
     @Fetch(FetchMode.JOIN)
     @OneToMany(mappedBy = "teaOrder", cascade = CascadeType.ALL)
     private List<TeaOrderLine> orderLines;
+
+    @Builder
+    public TeaOrder(UUID id, Integer version, Instant createDate, Instant updateDate, Customer customer,
+                    OrderStatus orderStatus, List<TeaOrderLine> orderLines) {
+        super(id, version, createDate, updateDate);
+        this.customer = customer;
+        this.orderStatus = orderStatus == null ? OrderStatus.NEW : orderStatus;
+        this.orderLines = orderLines;
+    }
 }
