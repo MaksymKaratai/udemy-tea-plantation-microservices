@@ -4,11 +4,19 @@ spring:
       uri: mongodb://root:root@localhost:30001/tea-plantation?authSource=admin
       database: tea-plantation
       uuid-representation: standard
+  rabbitmq:
+    host: localhost
+    port: 31691
+    username: rabbitmq
+    password: rab!@#
+
 mongock:
   transactionEnabled: false
   migration-scan-package: com.tea.plantation.migration
 
 tea:
+  plantation:
+    synchronize-with-inventory-duration: PT1M
   inventory:
     host: 'http://localhost:8082'
     endpoint: '/v1/inventory/tea/{teaId}'
@@ -16,8 +24,11 @@ tea:
 logging:
   level:
     root: info
+    com:
+      tea:
+        plantation: debug
     org:
       apache:
         hc:
           client5:
-            http: debug
+            http: info

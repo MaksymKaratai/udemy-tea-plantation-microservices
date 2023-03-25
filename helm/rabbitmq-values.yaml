@@ -1,0 +1,14 @@
+# helm repo add my-repo https://charts.bitnami.com/bitnami
+# helm install --dry-run rabbitmq -n rabbitmq my-repo/rabbitmq --values=rabbitmq-values.yaml
+# helm install rabbitmq -n rabbitmq my-repo/rabbitmq --values=rabbitmq-values.yaml
+global:
+  storageClass: "hostpath"
+persistence:
+  size: 3Gi
+service:
+  type: NodePort
+auth:
+  username: rabbitmq
+  password: rab!@#
+
+# check resources for all

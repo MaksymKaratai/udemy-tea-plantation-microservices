@@ -36,4 +36,8 @@ public class Tea extends UUIDEntity implements Identifiable<String> {
 
     @Field(targetType = FieldType.DECIMAL128)
     private BigDecimal price;
+
+    private Integer minimalAmountInInventory;
+
+    private Integer quantityToPackage;
 }
