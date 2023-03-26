@@ -2,6 +2,8 @@ package com.tea.order.domain;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
@@ -33,6 +35,7 @@ public class TeaOrder extends JpaEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Customer customer;
 
+    @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus = OrderStatus.NEW;
 
     @ToString.Exclude
