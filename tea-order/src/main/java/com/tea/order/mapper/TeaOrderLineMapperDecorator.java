@@ -2,7 +2,7 @@ package com.tea.order.mapper;
 
 import com.tea.common.dto.plantation.TeaDto;
 import com.tea.order.domain.TeaOrderLine;
-import com.tea.order.dto.TeaOrderLineDto;
+import com.tea.common.dto.order.TeaOrderLineDto;
 import com.tea.order.services.client.TeaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

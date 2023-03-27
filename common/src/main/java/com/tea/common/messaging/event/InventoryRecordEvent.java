@@ -1,4 +1,4 @@
-package com.tea.common.dto.event;
+package com.tea.common.messaging.event;
 
 import java.util.UUID;
 

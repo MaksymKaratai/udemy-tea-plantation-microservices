@@ -2,7 +2,7 @@ package com.tea.order.mapper;
 
 import com.tea.common.mapper.EntityMapper;
 import com.tea.order.domain.TeaOrderLine;
-import com.tea.order.dto.TeaOrderLineDto;
+import com.tea.common.dto.order.TeaOrderLineDto;
 import org.mapstruct.DecoratedWith;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

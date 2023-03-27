@@ -2,7 +2,7 @@ package com.tea.order.mapper;
 
 import com.tea.common.Constants;
 import com.tea.order.domain.TeaOrder;
-import com.tea.order.dto.TeaOrderDto;
+import com.tea.common.dto.order.TeaOrderDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 

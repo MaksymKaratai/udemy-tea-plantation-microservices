@@ -4,7 +4,7 @@ import com.tea.common.exception.EntityNotFoundException;
 import com.tea.order.domain.Customer;
 import com.tea.order.domain.OrderStatus;
 import com.tea.order.domain.TeaOrder;
-import com.tea.order.dto.TeaOrderDto;
+import com.tea.common.dto.order.TeaOrderDto;
 import com.tea.order.mapper.TeaOrderMapper;
 import com.tea.order.repository.CustomerRepository;
 import com.tea.order.repository.TeaOrderRepository;
@@ -50,7 +50,7 @@ public class TeaOrderService {
     public void pickupOrder(UUID orderId) {
         TeaOrder order = teaOrderRepository.findById(orderId)
                 .orElseThrow(() -> new EntityNotFoundException(orderId));
-        if (!OrderStatus.READY.equals(order.getOrderStatus())) {
+        if (!OrderStatus.DELIVERED.equals(order.getOrderStatus())) {
             throw new IllegalStateException("Can't pickup order with state["+ order.getOrderStatus()+"]");
         }
         order.setOrderStatus(OrderStatus.PICKED_UP);

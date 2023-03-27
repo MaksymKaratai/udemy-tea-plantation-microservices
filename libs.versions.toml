@@ -15,6 +15,7 @@ httpclient5 = { module = 'org.apache.httpcomponents.client5:httpclient5', versio
 devtools = { module = 'org.springframework.boot:spring-boot-devtools' }
 spring-amqp = { module = 'org.springframework.amqp:spring-amqp' }
 spring-data-commons = { module = 'org.springframework.data:spring-data-commons' }
+spring-statemachine-core = { module = 'org.springframework.statemachine:spring-statemachine-core', version = '3.2.0' }
 spring-boot-starter-web = { module = 'org.springframework.boot:spring-boot-starter-web' }
 spring-boot-starter-test = { module = 'org.springframework.boot:spring-boot-starter-test' }
 spring-boot-starter-amqp = { module = 'org.springframework.boot:spring-boot-starter-amqp' }

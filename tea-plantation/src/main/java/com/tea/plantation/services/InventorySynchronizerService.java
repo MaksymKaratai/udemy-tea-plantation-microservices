@@ -1,6 +1,6 @@
 package com.tea.plantation.services;
 
-import com.tea.common.dto.event.PackingEvent;
+import com.tea.common.messaging.event.PackingEvent;
 import com.tea.common.messaging.AmqpConfig;
 import com.tea.plantation.domain.Tea;
 import com.tea.plantation.repository.TeaRepository;

@@ -1,6 +1,5 @@
-package com.tea.order.dto;
+package com.tea.common.dto.order;
 
-import com.tea.order.domain.OrderStatus;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
@@ -19,13 +18,13 @@ import java.util.UUID;
 public class TeaOrderDto extends JpaDto {
     @NotNull
     private UUID customerId;
-    private OrderStatus orderStatus;
+    private String orderStatus;
     @NotEmpty
     private List<TeaOrderLineDto> orderLines;
 
     @Builder
     public TeaOrderDto(@Null UUID id, @Null Integer version, @Null Instant createDate, @Null Instant updateDate,
-                       UUID customerId, OrderStatus orderStatus, List<TeaOrderLineDto> orderLines) {
+                       UUID customerId, String orderStatus, List<TeaOrderLineDto> orderLines) {
         super(id, version, createDate, updateDate);
         this.customerId = customerId;
         this.orderStatus = orderStatus;

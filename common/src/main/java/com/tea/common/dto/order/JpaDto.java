@@ -1,4 +1,4 @@
-package com.tea.order.dto;
+package com.tea.common.dto.order;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.tea.common.Constants;

@@ -1,4 +1,4 @@
-package com.tea.order.dto;
+package com.tea.common.dto.order;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;

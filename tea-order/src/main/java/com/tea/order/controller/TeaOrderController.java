@@ -1,7 +1,7 @@
 package com.tea.order.controller;
 
 import com.tea.common.utils.PageableUtils;
-import com.tea.order.dto.TeaOrderDto;
+import com.tea.common.dto.order.TeaOrderDto;
 import com.tea.order.services.TeaOrderService;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;

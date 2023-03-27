@@ -1,7 +1,7 @@
 package com.tea.plantation.services;
 
-import com.tea.common.dto.event.InventoryRecordEvent;
-import com.tea.common.dto.event.PackingEvent;
+import com.tea.common.messaging.event.InventoryRecordEvent;
+import com.tea.common.messaging.event.PackingEvent;
 import com.tea.common.messaging.AmqpConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

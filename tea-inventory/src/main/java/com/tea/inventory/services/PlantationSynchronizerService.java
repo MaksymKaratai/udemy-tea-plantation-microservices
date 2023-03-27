@@ -1,6 +1,6 @@
 package com.tea.inventory.services;
 
-import com.tea.common.dto.event.InventoryRecordEvent;
+import com.tea.common.messaging.event.InventoryRecordEvent;
 import com.tea.common.dto.inventory.TeaInventoryDto;
 import com.tea.common.messaging.AmqpConfig;
 import lombok.RequiredArgsConstructor;
