@@ -6,6 +6,7 @@ import com.tea.order.repository.TeaOrderRepository;
 import com.tea.order.sm.OrderEvent;
 import com.tea.order.sm.OrderStateChangeInterceptor;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.config.StateMachineFactory;
@@ -16,6 +17,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OrderCoordinatorService {
@@ -37,6 +39,11 @@ public class OrderCoordinatorService {
         TeaOrder order = repository.getReferenceById(orderId);
         OrderEvent event = isValid ? OrderEvent.VALIDATION_OK : OrderEvent.VALIDATION_FAILED;
         sendEvent(order, event);
+        if (isValid) {
+            log.debug("Initiate allocation for order [{}]", orderId);
+            TeaOrder lastOrder = repository.getReferenceById(orderId);
+            sendEvent(lastOrder, OrderEvent.ALLOCATE);
+        }
     }
 
     private void sendEvent(TeaOrder order, OrderEvent event) {
