@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class OrderCoordinatorService {
@@ -28,6 +30,13 @@ public class OrderCoordinatorService {
         TeaOrder saved = repository.saveAndFlush(teaOrder);
         sendEvent(saved, OrderEvent.VALIDATE);
         return saved;
+    }
+
+    @Transactional
+    public void handleValidationResult(UUID orderId, boolean isValid) {
+        TeaOrder order = repository.getReferenceById(orderId);
+        OrderEvent event = isValid ? OrderEvent.VALIDATION_OK : OrderEvent.VALIDATION_FAILED;
+        sendEvent(order, event);
     }
 
     private void sendEvent(TeaOrder order, OrderEvent event) {

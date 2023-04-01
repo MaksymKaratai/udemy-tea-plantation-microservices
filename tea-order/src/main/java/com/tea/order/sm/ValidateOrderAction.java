@@ -16,6 +16,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
+import static com.tea.common.messaging.AmqpOrderProcessingConfig.ORDER_PROCESSING_EXCHANGE;
+import static com.tea.common.messaging.AmqpOrderProcessingConfig.ORDER_VALIDATION_ROUTING_KEY;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -31,8 +34,7 @@ public class ValidateOrderAction implements Action<OrderStatus, OrderEvent> {
         TeaOrderDto order = service.findOrder(id);
 
         ValidateOrderEvent event = new ValidateOrderEvent(order);
-        //todo add exchange, binding, and queue
-        template.convertAndSend("order-processing-exchange", "validate-order-queue", event);
+        template.convertAndSend(ORDER_PROCESSING_EXCHANGE, ORDER_VALIDATION_ROUTING_KEY, event);
         log.debug("Sent validation event for order[{}]", id);
     }
 }
