@@ -1,5 +1,7 @@
 package com.tea.order.services;
 
+import com.tea.common.dto.order.TeaOrderDto;
+import com.tea.common.dto.order.TeaOrderLineDto;
 import com.tea.order.domain.OrderStatus;
 import com.tea.order.domain.TeaOrder;
 import com.tea.order.repository.TeaOrderRepository;
@@ -15,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -22,6 +26,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class OrderCoordinatorService {
     public static final String ORDER_ID_HEADER = "tea-order-id";
+    public static final String ALLOCATION_MAP_HEADER = "allocation-map";
 
     private final TeaOrderRepository repository;
     private final OrderStateChangeInterceptor stateChangeInterceptor;
@@ -40,10 +45,30 @@ public class OrderCoordinatorService {
         OrderEvent event = isValid ? OrderEvent.VALIDATION_OK : OrderEvent.VALIDATION_FAILED;
         sendEvent(order, event);
         if (isValid) {
-            log.debug("Initiate allocation for order [{}]", orderId);
-            TeaOrder lastOrder = repository.getReferenceById(orderId);
-            sendEvent(lastOrder, OrderEvent.ALLOCATE);
+            allocate(orderId);
         }
+    }
+
+    @Transactional
+    public void allocate(UUID orderId) {
+        log.debug("Initiate allocation for order [{}]", orderId);
+        TeaOrder lastOrder = repository.getReferenceById(orderId);
+        sendEvent(lastOrder, OrderEvent.ALLOCATE);
+    }
+
+    @Transactional// make 3 separate methods / add extra logic into interceptor to update allocated resources, use map in headers
+    public void handleAllocationOk(TeaOrderDto orderDto) {
+        sendEventWithAllocationDetails(orderDto, OrderEvent.ALLOCATION_OK);
+    }
+
+    @Transactional
+    public void handleAllocationFailed(UUID orderId) {
+        // do nothing for now
+    }
+
+    @Transactional
+    public void handlePendingForInventory(TeaOrderDto orderDto) {
+        sendEventWithAllocationDetails(orderDto, OrderEvent.WAIT_FOR_INVENTORY);
     }
 
     private void sendEvent(TeaOrder order, OrderEvent event) {
@@ -51,6 +76,21 @@ public class OrderCoordinatorService {
         var message = MessageBuilder.withPayload(event)
                 .setHeader(ORDER_ID_HEADER, order.getId())
                 .build();
+        stateMachine.sendEvent(Mono.just(message)).blockFirst();
+    }
+
+    private void sendEventWithAllocationDetails(TeaOrderDto order, OrderEvent event) {
+        List<TeaOrderLineDto> orderLines = order.getOrderLines();
+        var allocationMap = new HashMap<>(orderLines.size());
+        for (var line : orderLines) {
+            allocationMap.put(line.getId(), line.getQuantityAllocated());
+        }
+        TeaOrder orderEntity = repository.getReferenceById(order.getId());
+        var message = MessageBuilder.withPayload(event)
+                .setHeader(ORDER_ID_HEADER, order.getId())
+                .setHeader(ALLOCATION_MAP_HEADER, allocationMap)
+                .build();
+        StateMachine<OrderStatus, OrderEvent> stateMachine = getStateMachine(orderEntity);
         stateMachine.sendEvent(Mono.just(message)).blockFirst();
     }
 

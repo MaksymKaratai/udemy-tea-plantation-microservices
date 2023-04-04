@@ -1,4 +1,4 @@
-package com.tea.order.services.amqp;
+package com.tea.order.amqp;
 
 import com.tea.common.messaging.event.order.OrderValidatedEvent;
 import com.tea.order.services.OrderCoordinatorService;

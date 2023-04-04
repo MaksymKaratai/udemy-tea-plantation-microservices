@@ -17,6 +17,7 @@ import static com.tea.order.domain.OrderStatus.ALLOCATING;
 import static com.tea.order.domain.OrderStatus.DELIVERED;
 import static com.tea.order.domain.OrderStatus.DELIVERING;
 import static com.tea.order.domain.OrderStatus.NEW;
+import static com.tea.order.domain.OrderStatus.PENDING_INVENTORY;
 import static com.tea.order.domain.OrderStatus.PICKED_UP;
 import static com.tea.order.domain.OrderStatus.VALIDATED;
 import static com.tea.order.domain.OrderStatus.VALIDATING;
@@ -32,6 +33,7 @@ import static com.tea.order.sm.OrderEvent.DELIVERY_OK;
 import static com.tea.order.sm.OrderEvent.VALIDATE;
 import static com.tea.order.sm.OrderEvent.VALIDATION_FAILED;
 import static com.tea.order.sm.OrderEvent.VALIDATION_OK;
+import static com.tea.order.sm.OrderEvent.WAIT_FOR_INVENTORY;
 
 @Configuration
 @RequiredArgsConstructor
@@ -57,6 +59,7 @@ public class TeaOrderStateMachineConfigurer extends StateMachineConfigurerAdapte
                 .source(NEW).event(VALIDATE).target(VALIDATING)
                     .action(validateAction)
                 .and().withExternal()
+                // validations
                 .source(VALIDATING).event(VALIDATION_FAILED).target(VALIDATION_ERROR)
                 .and().withExternal()
                 .source(VALIDATING).event(VALIDATION_OK).target(VALIDATED)
@@ -64,10 +67,16 @@ public class TeaOrderStateMachineConfigurer extends StateMachineConfigurerAdapte
                 .source(VALIDATED).event(ALLOCATE).target(ALLOCATING)
                     .action(allocationAction)
                 .and().withExternal()
+                // allocations
                 .source(ALLOCATING).event(ALLOCATION_FAILED).target(ALLOCATION_ERROR)
+                .and().withExternal()
+                .source(ALLOCATING).event(WAIT_FOR_INVENTORY).target(PENDING_INVENTORY)
+                .and().withExternal()
+                .source(PENDING_INVENTORY).event(ALLOCATE).target(ALLOCATING)
                 .and().withExternal()
                 .source(ALLOCATING).event(ALLOCATION_OK).target(ALLOCATED)
                 .and().withExternal()
+                // delivering
                 .source(ALLOCATED).event(DELIVER).target(DELIVERING)
                 .and().withExternal()
                 .source(DELIVERING).event(DELIVERY_FAILED).target(DELIVERING_ERROR)
