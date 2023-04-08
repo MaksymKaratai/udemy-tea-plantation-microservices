@@ -7,6 +7,11 @@ spring:
     url: jdbc:postgresql://localhost:30002/tea?currentSchema=order-service
     username: order-user
     password: ord!@#
+  rabbitmq:
+    host: localhost
+    port: 31691
+    username: rabbitmq
+    password: rab!@#
 
 server:
   port: 8081

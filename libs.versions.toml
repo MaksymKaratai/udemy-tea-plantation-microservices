@@ -6,6 +6,7 @@ lombok = { module = 'org.projectlombok:lombok' }
 flyway = { module = 'org.flywaydb:flyway-core' }
 postgresql = { module = 'org.postgresql:postgresql' }
 datafaker = { module = 'net.datafaker:datafaker', version = '1.8.0' }
+awaitility = { module = 'org.awaitility:awaitility', version = '4.2.0' }
 commons-lang3 = { module = 'org.apache.commons:commons-lang3' }
 commons-collections4 = { module = 'org.apache.commons:commons-collections4', version = '4.4' }
 mapstruct = { module = 'org.mapstruct:mapstruct', version.ref = 'mapstruct-version' }
@@ -26,6 +27,10 @@ spring-boot-starter-data-mongodb = { module = 'org.springframework.boot:spring-b
 mongock-bom = { module = 'io.mongock:mongock-bom', version = '5.2.2' }
 mongock-springboot = { module = 'io.mongock:mongock-springboot-v3' }
 mongock-driver = { module = 'io.mongock:mongodb-springdata-v4-driver' }
+
+testcontainers-jupiter = { module = "org.testcontainers:junit-jupiter", version = '1.18.0' }
+testcontainers-postgres = { module = "org.testcontainers:postgresql", version = '1.18.0' }
+testcontainers-rabbitmq = { module = "org.testcontainers:rabbitmq", version = '1.17.6' }
 
 [plugins]
 spring-boot = { id = 'org.springframework.boot', version = '3.0.2' }

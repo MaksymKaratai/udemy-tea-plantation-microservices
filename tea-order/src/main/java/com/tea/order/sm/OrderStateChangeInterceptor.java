@@ -52,7 +52,7 @@ public class OrderStateChangeInterceptor extends StateMachineInterceptorAdapter<
         log.debug("New allocations for order lines present, update them");
         List<TeaOrderLine> orderLines = order.getOrderLines();
         for (var line : orderLines) {
-            Object amount = allocationMap.get(line.getTeaId());
+            Object amount = allocationMap.get(line.getId());
             if (amount instanceof Integer) {
                 line.setQuantityAllocated((Integer) amount);
             }

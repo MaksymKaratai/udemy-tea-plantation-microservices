@@ -23,6 +23,7 @@ dependencies {
 
 	implementation libs.mapstruct
 	implementation libs.commons.lang3
+	implementation libs.commons.collections4
 	implementation libs.spring.statemachine.core
 	implementation libs.spring.boot.starter.web
 	implementation libs.spring.boot.starter.amqp
@@ -40,6 +41,10 @@ dependencies {
 	developmentOnly libs.devtools
 
 	testImplementation libs.spring.boot.starter.test
+	testImplementation libs.testcontainers.postgres
+	testImplementation libs.testcontainers.rabbitmq
+	testImplementation libs.testcontainers.jupiter
+	testImplementation libs.awaitility
 }
 
 tasks.named('test') {
