@@ -3,6 +3,7 @@ package com.tea.order.sm;
 import com.tea.order.domain.OrderStatus;
 import com.tea.order.sm.action.AllocateOrderAction;
 import com.tea.order.sm.action.ValidateOrderAction;
+import com.tea.order.sm.action.ValidationFailedCompensationAction;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.statemachine.config.EnableStateMachineFactory;
@@ -37,6 +38,7 @@ import static com.tea.order.sm.OrderEvent.WAIT_FOR_INVENTORY;
 public class TeaOrderStateMachineConfigurer extends StateMachineConfigurerAdapter<OrderStatus, OrderEvent> {
     private final ValidateOrderAction validateAction;
     private final AllocateOrderAction allocationAction;
+    private final ValidationFailedCompensationAction validationFailedCompensationAction;
 
     @Override
     public void configure(StateMachineStateConfigurer<OrderStatus, OrderEvent> states) throws Exception {
@@ -57,6 +59,7 @@ public class TeaOrderStateMachineConfigurer extends StateMachineConfigurerAdapte
                 .and().withExternal()
                 // validations
                 .source(VALIDATING).event(VALIDATION_FAILED).target(VALIDATION_ERROR)
+                    .action(validationFailedCompensationAction)
                 .and().withExternal()
                 .source(VALIDATING).event(VALIDATION_OK).target(VALIDATED)
                 .and().withExternal()

@@ -76,7 +76,7 @@ class OrderCoordinatorServiceIT {
     OrderCoordinatorService coordinatorService;
 
     @Test
-    void coordinatorShouldMoveOrderFromNewToAllocatedStatus_WhenValidationAndAllocationWereSuccessful() {
+    void coordinatorShouldMoveOrderFromNewTo_AllocatedStatus_WhenValidationAndAllocationWereSuccessful() {
         var order = TeaOrderDto.builder()
                 .orderLines(List.of(orderLine(10), orderLine(5)))
                 .build();
@@ -133,7 +133,7 @@ class OrderCoordinatorServiceIT {
     }
 
     @Test
-    void coordinatorShouldMoveAllocatedOrderToPickedUpStatus() {
+    void coordinatorShouldMoveAllocatedOrderTo_PickedUpStatus() {
         var line = TeaOrderLine.builder()
                 .orderQuantity(5)
                 .quantityAllocated(5)
@@ -151,6 +151,24 @@ class OrderCoordinatorServiceIT {
 
         Awaitility.await().atMost(3, SECONDS)
                 .until(() -> repository.currentStatusById(orderId).equals(OrderStatus.PICKED_UP));
+    }
+
+    @Test
+    void coordinatorShouldMoveOrderTo_ValidationFailedStatus_WhenValidationFailed() {
+        TeaOrder teaOrder = coordinatorService.newOrder(new TeaOrder());
+
+        // wait for validation event
+        var validationReqType = new ParameterizedTypeReference<ValidateOrderEvent>(){};
+        var validationEvent = amqpTemplate.receiveAndConvert(ORDER_VALIDATION_QUEUE, 1000, validationReqType);
+        Assertions.assertNotNull(validationEvent);
+        Assertions.assertNotNull(validationEvent.order());
+
+        // simulate fail response from plantation service via amqp
+        var validatedEvent = new OrderValidatedEvent(validationEvent.order().getId(), false);
+        amqpTemplate.convertAndSend(ORDER_PROCESSING_EXCHANGE, ORDER_VALIDATION_RESULT_ROUTING_KEY, validatedEvent);
+
+        Awaitility.await().atMost(3, SECONDS)
+                .until(() -> OrderStatus.VALIDATION_ERROR.equals(repository.currentStatusById(teaOrder.getId())));
     }
 
     private TeaOrderLineDto orderLine(int quantity) {

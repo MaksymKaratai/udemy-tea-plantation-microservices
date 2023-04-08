@@ -9,7 +9,6 @@ import com.tea.order.services.OrderCoordinatorService;
 import com.tea.order.sm.OrderEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.core.AmqpTemplate;
-import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.statemachine.StateContext;
 import org.springframework.statemachine.action.Action;
@@ -23,8 +22,7 @@ public abstract class OrderAction implements Action<OrderStatus, OrderEvent> {
     protected final TeaOrderRepository repository;
 
     protected TeaOrderDto orderBasedOnHeaders(StateContext<OrderStatus, OrderEvent> context) {
-        Message<OrderEvent> message = context.getMessage();
-        MessageHeaders headers = message.getHeaders();
+        MessageHeaders headers = context.getMessageHeaders();
         Object headerValue = headers.get(OrderCoordinatorService.ORDER_ID_HEADER);
         if (!(headerValue instanceof UUID id)) {
             throw new IllegalArgumentException("StateMachine message doesnt contain orderId");
