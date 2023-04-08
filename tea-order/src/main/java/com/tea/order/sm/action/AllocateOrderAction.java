@@ -3,7 +3,8 @@ package com.tea.order.sm.action;
 import com.tea.common.dto.order.TeaOrderDto;
 import com.tea.common.messaging.event.order.AllocateOrderEvent;
 import com.tea.order.domain.OrderStatus;
-import com.tea.order.services.TeaOrderService;
+import com.tea.order.mapper.TeaOrderMapper;
+import com.tea.order.repository.TeaOrderRepository;
 import com.tea.order.sm.OrderEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AmqpTemplate;
@@ -16,8 +17,8 @@ import static com.tea.common.messaging.AmqpOrderProcessingConfig.ORDER_ALLOCATIO
 @Slf4j
 @Component
 public class AllocateOrderAction extends OrderAction {
-    public AllocateOrderAction(AmqpTemplate template, TeaOrderService service) {
-        super(template, service);
+    public AllocateOrderAction(AmqpTemplate template, TeaOrderMapper mapper, TeaOrderRepository repository) {
+        super(template, mapper, repository);
     }
 
     @Override

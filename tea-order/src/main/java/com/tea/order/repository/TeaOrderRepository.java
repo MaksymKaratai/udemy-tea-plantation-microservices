@@ -1,5 +1,6 @@
 package com.tea.order.repository;
 
+import com.tea.common.exception.EntityNotFoundException;
 import com.tea.order.domain.Customer;
 import com.tea.order.domain.OrderStatus;
 import com.tea.order.domain.TeaOrder;
@@ -23,4 +24,9 @@ public interface TeaOrderRepository extends JpaRepository<TeaOrder, UUID> {
     @Transactional
     @Query("select order.orderStatus from TeaOrder order where order.id = ?1")
     OrderStatus currentStatusById(UUID orderId);
+
+    default TeaOrder orderEntityById(UUID orderId) {
+        return this.findById(orderId)
+                .orElseThrow(() -> new EntityNotFoundException(orderId));
+    }
 }

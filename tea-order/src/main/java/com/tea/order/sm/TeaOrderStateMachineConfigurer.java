@@ -1,8 +1,8 @@
 package com.tea.order.sm;
 
 import com.tea.order.domain.OrderStatus;
-import com.tea.order.sm.action.ValidateOrderAction;
 import com.tea.order.sm.action.AllocateOrderAction;
+import com.tea.order.sm.action.ValidateOrderAction;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.statemachine.config.EnableStateMachineFactory;
@@ -14,22 +14,18 @@ import java.util.EnumSet;
 
 import static com.tea.order.domain.OrderStatus.ALLOCATED;
 import static com.tea.order.domain.OrderStatus.ALLOCATING;
-import static com.tea.order.domain.OrderStatus.DELIVERED;
-import static com.tea.order.domain.OrderStatus.DELIVERING;
+import static com.tea.order.domain.OrderStatus.ALLOCATION_ERROR;
+import static com.tea.order.domain.OrderStatus.DELIVERING_ERROR;
 import static com.tea.order.domain.OrderStatus.NEW;
 import static com.tea.order.domain.OrderStatus.PENDING_INVENTORY;
 import static com.tea.order.domain.OrderStatus.PICKED_UP;
 import static com.tea.order.domain.OrderStatus.VALIDATED;
 import static com.tea.order.domain.OrderStatus.VALIDATING;
 import static com.tea.order.domain.OrderStatus.VALIDATION_ERROR;
-import static com.tea.order.domain.OrderStatus.ALLOCATION_ERROR;
-import static com.tea.order.domain.OrderStatus.DELIVERING_ERROR;
 import static com.tea.order.sm.OrderEvent.ALLOCATE;
 import static com.tea.order.sm.OrderEvent.ALLOCATION_FAILED;
 import static com.tea.order.sm.OrderEvent.ALLOCATION_OK;
-import static com.tea.order.sm.OrderEvent.DELIVER;
-import static com.tea.order.sm.OrderEvent.DELIVERY_FAILED;
-import static com.tea.order.sm.OrderEvent.DELIVERY_OK;
+import static com.tea.order.sm.OrderEvent.ORDER_PICK_UP;
 import static com.tea.order.sm.OrderEvent.VALIDATE;
 import static com.tea.order.sm.OrderEvent.VALIDATION_FAILED;
 import static com.tea.order.sm.OrderEvent.VALIDATION_OK;
@@ -76,11 +72,7 @@ public class TeaOrderStateMachineConfigurer extends StateMachineConfigurerAdapte
                 .and().withExternal()
                 .source(ALLOCATING).event(ALLOCATION_OK).target(ALLOCATED)
                 .and().withExternal()
-                // delivering
-                .source(ALLOCATED).event(DELIVER).target(DELIVERING)
-                .and().withExternal()
-                .source(DELIVERING).event(DELIVERY_FAILED).target(DELIVERING_ERROR)
-                .and().withExternal()
-                .source(DELIVERING).event(DELIVERY_OK).target(DELIVERED);
+                // pickup
+                .source(ALLOCATED).event(ORDER_PICK_UP).target(PICKED_UP);
     }
 }

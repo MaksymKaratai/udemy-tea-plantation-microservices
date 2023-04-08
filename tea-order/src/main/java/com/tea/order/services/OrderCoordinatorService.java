@@ -71,6 +71,12 @@ public class OrderCoordinatorService {
         sendEventWithAllocationDetails(orderDto, OrderEvent.WAIT_FOR_INVENTORY);
     }
 
+    @Transactional
+    public void pickupOrder(UUID orderId) {
+        TeaOrder teaOrder = repository.getReferenceById(orderId);
+        sendEvent(teaOrder, OrderEvent.ORDER_PICK_UP);
+    }
+
     private void sendEvent(TeaOrder order, OrderEvent event) {
         StateMachine<OrderStatus, OrderEvent> stateMachine = getStateMachine(order);
         var message = MessageBuilder.withPayload(event)

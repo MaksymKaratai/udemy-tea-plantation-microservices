@@ -2,7 +2,6 @@ package com.tea.order.services;
 
 import com.tea.common.exception.EntityNotFoundException;
 import com.tea.order.domain.Customer;
-import com.tea.order.domain.OrderStatus;
 import com.tea.order.domain.TeaOrder;
 import com.tea.common.dto.order.TeaOrderDto;
 import com.tea.order.mapper.TeaOrderMapper;
@@ -24,6 +23,7 @@ public class TeaOrderService {
     private final TeaOrderMapper teaOrderMapper;
     private final TeaOrderRepository teaOrderRepository;
     private final CustomerRepository customerRepository;
+    private final OrderCoordinatorService coordinatorService;
 
     public Page<TeaOrderDto> customerOrders(UUID customerId, Pageable pageable) {
         Customer customer = findCustomer(customerId);
@@ -41,26 +41,19 @@ public class TeaOrderService {
         Customer customer = findCustomer(orderDto.getCustomerId());
         TeaOrder teaOrder = teaOrderMapper.toEntity(orderDto);
         teaOrder.setCustomer(customer);
-        TeaOrder saved = teaOrderRepository.saveAndFlush(teaOrder);
+        TeaOrder saved = coordinatorService.newOrder(teaOrder);
         log.debug("Made an order with id[{}]", saved.getId());
         return teaOrderMapper.toDto(saved);
     }
 
     @Transactional
     public void pickupOrder(UUID orderId) {
-        TeaOrder order = teaOrderRepository.findById(orderId)
-                .orElseThrow(() -> new EntityNotFoundException(orderId));
-        if (!OrderStatus.DELIVERED.equals(order.getOrderStatus())) {
-            throw new IllegalStateException("Can't pickup order with state["+ order.getOrderStatus()+"]");
-        }
-        order.setOrderStatus(OrderStatus.PICKED_UP);
-        teaOrderRepository.saveAndFlush(order);
-        log.debug("Moved order[{}] to [{}] status", orderId, OrderStatus.PICKED_UP);
+        coordinatorService.pickupOrder(orderId);
+        log.debug("Picked up order[{}]", orderId);
     }
 
     public TeaOrderDto findOrder(UUID orderId) {
-        return teaOrderRepository.findById(orderId)
-                .map(teaOrderMapper::toDto)
-                .orElseThrow(() -> new EntityNotFoundException(orderId));
+        TeaOrder teaOrder = teaOrderRepository.orderEntityById(orderId);
+        return teaOrderMapper.toDto(teaOrder);
     }
 }

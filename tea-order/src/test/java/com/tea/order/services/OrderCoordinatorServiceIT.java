@@ -8,6 +8,7 @@ import com.tea.common.messaging.event.order.OrderValidatedEvent;
 import com.tea.common.messaging.event.order.ValidateOrderEvent;
 import com.tea.order.domain.OrderStatus;
 import com.tea.order.domain.TeaOrder;
+import com.tea.order.domain.TeaOrderLine;
 import com.tea.order.mapper.TeaOrderMapper;
 import com.tea.order.repository.TeaOrderRepository;
 import org.apache.commons.collections4.CollectionUtils;
@@ -28,13 +29,13 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 import static com.tea.common.messaging.AmqpOrderProcessingConfig.ORDER_ALLOCATION_QUEUE;
 import static com.tea.common.messaging.AmqpOrderProcessingConfig.ORDER_ALLOCATION_RESULT_ROUTING_KEY;
 import static com.tea.common.messaging.AmqpOrderProcessingConfig.ORDER_PROCESSING_EXCHANGE;
 import static com.tea.common.messaging.AmqpOrderProcessingConfig.ORDER_VALIDATION_QUEUE;
 import static com.tea.common.messaging.AmqpOrderProcessingConfig.ORDER_VALIDATION_RESULT_ROUTING_KEY;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 
 @Tag("IT")
@@ -100,8 +101,8 @@ class OrderCoordinatorServiceIT {
         amqpTemplate.convertAndSend(ORDER_PROCESSING_EXCHANGE, ORDER_VALIDATION_RESULT_ROUTING_KEY, validatedEvent);
 
         // check intermediate status
-        Awaitility.await().atMost(2, TimeUnit.SECONDS)
-            .until(() -> OrderStatus.ALLOCATING.equals(repository.currentStatusById(teaOrder.getId())));
+        Awaitility.await().atMost(2, SECONDS)
+                .until(() -> OrderStatus.ALLOCATING.equals(repository.currentStatusById(teaOrder.getId())));
 
         // wait for allocation event
         var allocationReqType = new ParameterizedTypeReference<AllocateOrderEvent>(){};
@@ -119,7 +120,7 @@ class OrderCoordinatorServiceIT {
         amqpTemplate.convertAndSend(ORDER_PROCESSING_EXCHANGE, ORDER_ALLOCATION_RESULT_ROUTING_KEY, allocationResultEvent);
 
         // check intermediate status
-        Awaitility.await().atMost(2, TimeUnit.SECONDS)
+        Awaitility.await().atMost(2, SECONDS)
                 .until(() -> OrderStatus.ALLOCATED.equals(repository.currentStatusById(teaOrder.getId())));
 
         var resultOrderOptional = repository.findById(teaOrder.getId());
@@ -129,6 +130,27 @@ class OrderCoordinatorServiceIT {
         for (var line : resultOrder.getOrderLines()) {
             Assertions.assertEquals(line.getOrderQuantity(), line.getQuantityAllocated());
         }
+    }
+
+    @Test
+    void coordinatorShouldMoveAllocatedOrderToPickedUpStatus() {
+        var line = TeaOrderLine.builder()
+                .orderQuantity(5)
+                .quantityAllocated(5)
+                .teaId(UUID.randomUUID())
+                .build();
+        var order = TeaOrder.builder()
+                .orderLines(List.of(line))
+                .orderStatus(OrderStatus.ALLOCATED)
+                .build();
+
+        TeaOrder allocated = repository.saveAndFlush(order);
+        UUID orderId = allocated.getId();
+
+        coordinatorService.pickupOrder(orderId);
+
+        Awaitility.await().atMost(3, SECONDS)
+                .until(() -> repository.currentStatusById(orderId).equals(OrderStatus.PICKED_UP));
     }
 
     private TeaOrderLineDto orderLine(int quantity) {
