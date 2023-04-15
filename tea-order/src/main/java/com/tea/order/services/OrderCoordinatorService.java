@@ -63,7 +63,8 @@ public class OrderCoordinatorService {
 
     @Transactional
     public void handleAllocationFailed(UUID orderId) {
-        // do nothing for now
+        TeaOrder order = repository.getReferenceById(orderId);
+        sendEvent(order, OrderEvent.ALLOCATION_FAILED);
     }
 
     @Transactional

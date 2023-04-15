@@ -4,6 +4,7 @@ import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Exchange;
+import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -13,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class AmqpOrderProcessingConfig {
     public static final String ORDER_PROCESSING_EXCHANGE = "order-processing-exchange";
+    public static final String ORDER_FAILED_ALLOCATION_EXCHANGE = "order-failed-allocation-exchange";
 
     public static final String ORDER_VALIDATION_QUEUE = "order-validation-queue";
     public static final String ORDER_VALIDATION_ROUTING_KEY = "order-validation-routing-key";
@@ -75,5 +77,10 @@ public class AmqpOrderProcessingConfig {
     public Binding orderAllocationResultBinding(@Qualifier(ORDER_PROCESSING_EXCHANGE) Exchange exchange,
                                                 @Qualifier(ORDER_ALLOCATION_RESULT_QUEUE) Queue queue) {
         return BindingBuilder.bind(queue).to(exchange).with(ORDER_ALLOCATION_RESULT_ROUTING_KEY).noargs();
+    }
+
+    @Bean(name = ORDER_FAILED_ALLOCATION_EXCHANGE)
+    public Exchange failedAllocationExchange() {
+        return new FanoutExchange(ORDER_FAILED_ALLOCATION_EXCHANGE, true, false);
     }
 }

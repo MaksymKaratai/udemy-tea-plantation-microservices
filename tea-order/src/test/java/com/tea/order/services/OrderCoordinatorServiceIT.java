@@ -4,6 +4,7 @@ import com.tea.common.dto.order.TeaOrderDto;
 import com.tea.common.dto.order.TeaOrderLineDto;
 import com.tea.common.messaging.event.order.AllocateOrderEvent;
 import com.tea.common.messaging.event.order.AllocationResultEvent;
+import com.tea.common.messaging.event.order.FailedOrderAllocationEvent;
 import com.tea.common.messaging.event.order.OrderValidatedEvent;
 import com.tea.common.messaging.event.order.ValidateOrderEvent;
 import com.tea.order.domain.OrderStatus;
@@ -11,6 +12,7 @@ import com.tea.order.domain.TeaOrder;
 import com.tea.order.domain.TeaOrderLine;
 import com.tea.order.mapper.TeaOrderMapper;
 import com.tea.order.repository.TeaOrderRepository;
+import com.tea.order.services.components.AdditionalBeans;
 import org.apache.commons.collections4.CollectionUtils;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Assertions;
@@ -19,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -35,12 +38,14 @@ import static com.tea.common.messaging.AmqpOrderProcessingConfig.ORDER_ALLOCATIO
 import static com.tea.common.messaging.AmqpOrderProcessingConfig.ORDER_PROCESSING_EXCHANGE;
 import static com.tea.common.messaging.AmqpOrderProcessingConfig.ORDER_VALIDATION_QUEUE;
 import static com.tea.common.messaging.AmqpOrderProcessingConfig.ORDER_VALIDATION_RESULT_ROUTING_KEY;
+import static com.tea.order.services.components.AdditionalBeans.ALLOCATION_ERROR_TEST_QUEUE;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 
 @Tag("IT")
 @Testcontainers
 @SpringBootTest
+@Import(AdditionalBeans.class)
 class OrderCoordinatorServiceIT {
     @Container
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:14-alpine")
@@ -169,6 +174,71 @@ class OrderCoordinatorServiceIT {
 
         Awaitility.await().atMost(3, SECONDS)
                 .until(() -> OrderStatus.VALIDATION_ERROR.equals(repository.currentStatusById(teaOrder.getId())));
+    }
+
+    @Test
+    void coordinatorShouldMoveOrderTo_AllocationErrorStatus_WhenAllocationFailed() {
+        TeaOrder teaOrder = coordinatorService.newOrder(new TeaOrder());
+
+        // wait for validation event
+        var validationReqType = new ParameterizedTypeReference<ValidateOrderEvent>(){};
+        var validationEvent = amqpTemplate.receiveAndConvert(ORDER_VALIDATION_QUEUE, 1000, validationReqType);
+        Assertions.assertNotNull(validationEvent);
+        Assertions.assertNotNull(validationEvent.order());
+
+        // simulate successful response from plantation service via amqp
+        var validatedEvent = new OrderValidatedEvent(validationEvent.order().getId(), true);
+        amqpTemplate.convertAndSend(ORDER_PROCESSING_EXCHANGE, ORDER_VALIDATION_RESULT_ROUTING_KEY, validatedEvent);
+
+        // wait for allocation event
+        var allocationReqType = new ParameterizedTypeReference<AllocateOrderEvent>(){};
+        var allocationEvent = amqpTemplate.receiveAndConvert(ORDER_ALLOCATION_QUEUE, 1000, allocationReqType);
+        Assertions.assertNotNull(allocationEvent);
+        // simulate fail response
+        var allocationResultEvent = new AllocationResultEvent(allocationEvent.orderDto(), true, false);
+        amqpTemplate.convertAndSend(ORDER_PROCESSING_EXCHANGE, ORDER_ALLOCATION_RESULT_ROUTING_KEY, allocationResultEvent);
+
+        Awaitility.await().atMost(3, SECONDS)
+                .until(()-> OrderStatus.ALLOCATION_ERROR.equals(repository.currentStatusById(teaOrder.getId())));
+
+        var orderFailedType = new ParameterizedTypeReference<FailedOrderAllocationEvent>(){};
+        var failMsg = amqpTemplate.receiveAndConvert(ALLOCATION_ERROR_TEST_QUEUE, 2000, orderFailedType);
+        Assertions.assertNotNull(failMsg);
+        Assertions.assertNotNull(failMsg.failedOrder());
+        Assertions.assertEquals(teaOrder.getId(), failMsg.failedOrder().getId());
+    }
+
+    @Test
+    void coordinatorShouldMoveOrderTo_PendingInventoryStatusAndUpdateOrderLines_WhenAllocationResultHas_PendingForInventoryFlag() {
+        TeaOrderDto order = TeaOrderDto.builder()
+                .orderLines(List.of(orderLine(10), orderLine(16)))
+                .build();
+        TeaOrder teaOrder = coordinatorService.newOrder(teaOrderMapper.toEntity(order));
+
+        // wait for validation event
+        var validationReqType = new ParameterizedTypeReference<ValidateOrderEvent>(){};
+        var validationEvent = amqpTemplate.receiveAndConvert(ORDER_VALIDATION_QUEUE, 1000, validationReqType);
+        Assertions.assertNotNull(validationEvent);
+        // simulate successful response from plantation service via amqp
+        var validatedEvent = new OrderValidatedEvent(validationEvent.order().getId(), true);
+        amqpTemplate.convertAndSend(ORDER_PROCESSING_EXCHANGE, ORDER_VALIDATION_RESULT_ROUTING_KEY, validatedEvent);
+
+        // wait for allocation event
+        var allocationReqType = new ParameterizedTypeReference<AllocateOrderEvent>(){};
+        var allocationEvent = amqpTemplate.receiveAndConvert(ORDER_ALLOCATION_QUEUE, 1000, allocationReqType);
+        Assertions.assertNotNull(allocationEvent);
+        TeaOrderDto allocationDto = allocationEvent.orderDto();
+        allocationDto.getOrderLines().forEach(line -> line.setQuantityAllocated(line.getOrderQuantity() / 2));
+        amqpTemplate.convertAndSend(ORDER_PROCESSING_EXCHANGE, ORDER_ALLOCATION_RESULT_ROUTING_KEY,
+                new AllocationResultEvent(allocationDto, false, true));
+
+        Awaitility.await().atMost(3, SECONDS)
+                .until(()-> OrderStatus.PENDING_INVENTORY.equals(repository.currentStatusById(teaOrder.getId())));
+        TeaOrder lastOrder = repository.orderEntityById(teaOrder.getId());
+        Assertions.assertTrue(CollectionUtils.isNotEmpty(lastOrder.getOrderLines()));
+        for (var line : lastOrder.getOrderLines()) {
+            Assertions.assertEquals(line.getOrderQuantity() / 2, line.getQuantityAllocated() );
+        }
     }
 
     private TeaOrderLineDto orderLine(int quantity) {

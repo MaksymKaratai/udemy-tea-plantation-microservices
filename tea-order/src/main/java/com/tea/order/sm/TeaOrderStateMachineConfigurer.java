@@ -2,6 +2,7 @@ package com.tea.order.sm;
 
 import com.tea.order.domain.OrderStatus;
 import com.tea.order.sm.action.AllocateOrderAction;
+import com.tea.order.sm.action.AllocationFailedCompensationAction;
 import com.tea.order.sm.action.ValidateOrderAction;
 import com.tea.order.sm.action.ValidationFailedCompensationAction;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,7 @@ public class TeaOrderStateMachineConfigurer extends StateMachineConfigurerAdapte
     private final ValidateOrderAction validateAction;
     private final AllocateOrderAction allocationAction;
     private final ValidationFailedCompensationAction validationFailedCompensationAction;
+    private final AllocationFailedCompensationAction allocationFailedCompensationAction;
 
     @Override
     public void configure(StateMachineStateConfigurer<OrderStatus, OrderEvent> states) throws Exception {
@@ -68,6 +70,7 @@ public class TeaOrderStateMachineConfigurer extends StateMachineConfigurerAdapte
                 .and().withExternal()
                 // allocations
                 .source(ALLOCATING).event(ALLOCATION_FAILED).target(ALLOCATION_ERROR)
+                    .action(allocationFailedCompensationAction)
                 .and().withExternal()
                 .source(ALLOCATING).event(WAIT_FOR_INVENTORY).target(PENDING_INVENTORY)
                 .and().withExternal()
