@@ -1,7 +1,7 @@
 package com.tea.common.messaging;
 
-import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.Declarables;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Exchange;
 import org.springframework.amqp.core.FanoutExchange;
@@ -31,56 +31,30 @@ public class AmqpOrderProcessingConfig {
         return new DirectExchange(ORDER_PROCESSING_EXCHANGE, true, false);
     }
 
-    @Bean(name = ORDER_VALIDATION_QUEUE)
-    public Queue orderValidationQueue() {
-        return new Queue(ORDER_VALIDATION_QUEUE, true);
-    }
-
-    @Bean
-    @Autowired
-    public Binding orderValidationBinding(@Qualifier(ORDER_PROCESSING_EXCHANGE) Exchange exchange,
-                                          @Qualifier(ORDER_VALIDATION_QUEUE) Queue queue) {
-        return BindingBuilder.bind(queue).to(exchange).with(ORDER_VALIDATION_ROUTING_KEY).noargs();
-    }
-
-    @Bean(name = ORDER_VALIDATION_RESULT_QUEUE)
-    public Queue orderValidationResultQueue() {
-        return new Queue(ORDER_VALIDATION_RESULT_QUEUE, true);
-    }
-
-    @Bean
-    @Autowired
-    public Binding orderValidationResultBinding(@Qualifier(ORDER_PROCESSING_EXCHANGE) Exchange exchange,
-                                                @Qualifier(ORDER_VALIDATION_RESULT_QUEUE) Queue queue) {
-        return BindingBuilder.bind(queue).to(exchange).with(ORDER_VALIDATION_RESULT_ROUTING_KEY).noargs();
-    }
-
-    @Bean(ORDER_ALLOCATION_QUEUE)
-    public Queue orderAllocationQueue() {
-        return new Queue(ORDER_ALLOCATION_QUEUE, true);
-    }
-
-    @Bean
-    @Autowired
-    public Binding orderAllocationBinding(@Qualifier(ORDER_PROCESSING_EXCHANGE) Exchange exchange,
-                                          @Qualifier(ORDER_ALLOCATION_QUEUE) Queue queue) {
-        return BindingBuilder.bind(queue).to(exchange).with(ORDER_ALLOCATION_ROUTING_KEY).noargs();
-    }
-
-    @Bean(ORDER_ALLOCATION_RESULT_QUEUE)
-    public Queue orderAllocationResultQueue() {
-        return new Queue(ORDER_ALLOCATION_RESULT_QUEUE, true);
-    }
-
-    @Bean
-    @Autowired
-    public Binding orderAllocationResultBinding(@Qualifier(ORDER_PROCESSING_EXCHANGE) Exchange exchange,
-                                                @Qualifier(ORDER_ALLOCATION_RESULT_QUEUE) Queue queue) {
-        return BindingBuilder.bind(queue).to(exchange).with(ORDER_ALLOCATION_RESULT_ROUTING_KEY).noargs();
-    }
-
     @Bean(name = ORDER_FAILED_ALLOCATION_EXCHANGE)
     public Exchange failedAllocationExchange() {
         return new FanoutExchange(ORDER_FAILED_ALLOCATION_EXCHANGE, true, false);
+    }
+
+    @Bean
+    @Autowired
+    public Declarables validationAmqpDeclarables(@Qualifier(ORDER_PROCESSING_EXCHANGE) Exchange exchange) {
+        return bindEventAndResultQueuesTo(exchange, ORDER_VALIDATION_QUEUE, ORDER_VALIDATION_ROUTING_KEY,
+                ORDER_VALIDATION_RESULT_QUEUE, ORDER_VALIDATION_RESULT_ROUTING_KEY);
+    }
+
+    @Bean
+    @Autowired
+    public Declarables allocationAmqpDeclarables(@Qualifier(ORDER_PROCESSING_EXCHANGE) Exchange exchange) {
+        return bindEventAndResultQueuesTo(exchange, ORDER_ALLOCATION_QUEUE, ORDER_ALLOCATION_ROUTING_KEY,
+                ORDER_ALLOCATION_RESULT_QUEUE, ORDER_ALLOCATION_RESULT_ROUTING_KEY);
+    }
+
+    Declarables bindEventAndResultQueuesTo(Exchange targetExchange, String eventQName, String eventQKey, String resQName, String resQKey) {
+        var eventQueue = new Queue(eventQName, true);
+        var binding1 = BindingBuilder.bind(eventQueue).to(targetExchange).with(eventQKey).noargs();
+        var resultQueue = new Queue(resQName, true);
+        var binding2 = BindingBuilder.bind(resultQueue).to(targetExchange).with(resQKey).noargs();
+        return new Declarables(eventQueue, binding1, resultQueue, binding2);
     }
 }
