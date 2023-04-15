@@ -25,6 +25,9 @@ import java.util.UUID;
 public class OrderStateChangeInterceptor extends StateMachineInterceptorAdapter<OrderStatus, OrderEvent> {
     private final TeaOrderRepository repository;
 
+    /**
+     * Updates Order status and allocation details(if present) in the DB
+     */
     @Override
     public void preStateChange(State<OrderStatus, OrderEvent> state, Message<OrderEvent> message,
                                Transition<OrderStatus, OrderEvent> transition,

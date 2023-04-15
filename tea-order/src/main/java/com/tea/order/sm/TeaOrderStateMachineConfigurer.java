@@ -3,6 +3,7 @@ package com.tea.order.sm;
 import com.tea.order.domain.OrderStatus;
 import com.tea.order.sm.action.AllocateOrderAction;
 import com.tea.order.sm.action.AllocationFailedCompensationAction;
+import com.tea.order.sm.action.CancelAllocatedOrderAction;
 import com.tea.order.sm.action.ValidateOrderAction;
 import com.tea.order.sm.action.ValidationFailedCompensationAction;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,7 @@ import java.util.EnumSet;
 import static com.tea.order.domain.OrderStatus.ALLOCATED;
 import static com.tea.order.domain.OrderStatus.ALLOCATING;
 import static com.tea.order.domain.OrderStatus.ALLOCATION_ERROR;
-import static com.tea.order.domain.OrderStatus.DELIVERING_ERROR;
+import static com.tea.order.domain.OrderStatus.CANCELED;
 import static com.tea.order.domain.OrderStatus.NEW;
 import static com.tea.order.domain.OrderStatus.PENDING_INVENTORY;
 import static com.tea.order.domain.OrderStatus.PICKED_UP;
@@ -27,6 +28,7 @@ import static com.tea.order.domain.OrderStatus.VALIDATION_ERROR;
 import static com.tea.order.sm.OrderEvent.ALLOCATE;
 import static com.tea.order.sm.OrderEvent.ALLOCATION_FAILED;
 import static com.tea.order.sm.OrderEvent.ALLOCATION_OK;
+import static com.tea.order.sm.OrderEvent.CANCEL;
 import static com.tea.order.sm.OrderEvent.ORDER_PICK_UP;
 import static com.tea.order.sm.OrderEvent.VALIDATE;
 import static com.tea.order.sm.OrderEvent.VALIDATION_FAILED;
@@ -41,6 +43,7 @@ public class TeaOrderStateMachineConfigurer extends StateMachineConfigurerAdapte
     private final AllocateOrderAction allocationAction;
     private final ValidationFailedCompensationAction validationFailedCompensationAction;
     private final AllocationFailedCompensationAction allocationFailedCompensationAction;
+    private final CancelAllocatedOrderAction cancelAllocatedOrderAction;
 
     @Override
     public void configure(StateMachineStateConfigurer<OrderStatus, OrderEvent> states) throws Exception {
@@ -50,7 +53,7 @@ public class TeaOrderStateMachineConfigurer extends StateMachineConfigurerAdapte
                 .end(PICKED_UP)
                 .end(VALIDATION_ERROR)
                 .end(ALLOCATION_ERROR)
-                .end(DELIVERING_ERROR);
+                .end(CANCELED);
     }
 
     @Override
@@ -79,6 +82,14 @@ public class TeaOrderStateMachineConfigurer extends StateMachineConfigurerAdapte
                 .source(ALLOCATING).event(ALLOCATION_OK).target(ALLOCATED)
                 .and().withExternal()
                 // pickup
-                .source(ALLOCATED).event(ORDER_PICK_UP).target(PICKED_UP);
+                .source(ALLOCATED).event(ORDER_PICK_UP).target(PICKED_UP)
+                .and().withExternal()
+                // canceling
+                .source(VALIDATED).event(CANCEL).target(CANCELED)
+                .and().withExternal()
+                .source(VALIDATING).event(CANCEL).target(CANCELED)
+                .and().withExternal()
+                .source(ALLOCATED).event(CANCEL).target(CANCELED)
+                    .action(cancelAllocatedOrderAction);
     }
 }

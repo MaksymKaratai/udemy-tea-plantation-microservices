@@ -42,6 +42,10 @@ public class OrderCoordinatorService {
     @Transactional
     public void handleValidationResult(UUID orderId, boolean isValid) {
         TeaOrder order = repository.getReferenceById(orderId);
+        if (OrderStatus.CANCELED.equals(order.getOrderStatus())) {
+            log.info("Order[{}] was canceled, skipping validation result processing", orderId);
+            return;
+        }
         OrderEvent event = isValid ? OrderEvent.VALIDATION_OK : OrderEvent.VALIDATION_FAILED;
         sendEvent(order, event);
         if (isValid) {
@@ -76,6 +80,12 @@ public class OrderCoordinatorService {
     public void pickupOrder(UUID orderId) {
         TeaOrder teaOrder = repository.getReferenceById(orderId);
         sendEvent(teaOrder, OrderEvent.ORDER_PICK_UP);
+    }
+
+    @Transactional
+    public void cancel(UUID orderId) {
+        TeaOrder order = repository.getReferenceById(orderId);
+        sendEvent(order, OrderEvent.CANCEL);
     }
 
     private void sendEvent(TeaOrder order, OrderEvent event) {

@@ -52,6 +52,12 @@ public class TeaOrderService {
         log.debug("Picked up order[{}]", orderId);
     }
 
+    @Transactional
+    public void cancelOrder(UUID orderId) {
+        coordinatorService.cancel(orderId);
+        log.debug("Canceled order[{}]", orderId);
+    }
+
     public TeaOrderDto findOrder(UUID orderId) {
         TeaOrder teaOrder = teaOrderRepository.orderEntityById(orderId);
         return teaOrderMapper.toDto(teaOrder);

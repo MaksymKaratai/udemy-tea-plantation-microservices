@@ -56,4 +56,10 @@ public class TeaOrderController {
     public void pickupOrder(@PathVariable @NotNull UUID orderId) {
         orderService.pickupOrder(orderId);
     }
+
+    @PostMapping("/{orderId}/cancel")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void cancelOrder(@PathVariable @NotNull UUID orderId) {
+        orderService.cancelOrder(orderId);
+    }
 }

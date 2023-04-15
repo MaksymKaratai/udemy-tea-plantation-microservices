@@ -4,6 +4,7 @@ import com.tea.common.dto.order.TeaOrderDto;
 import com.tea.common.dto.order.TeaOrderLineDto;
 import com.tea.common.messaging.event.order.AllocateOrderEvent;
 import com.tea.common.messaging.event.order.AllocationResultEvent;
+import com.tea.common.messaging.event.order.CancelOrderEvent;
 import com.tea.common.messaging.event.order.FailedOrderAllocationEvent;
 import com.tea.common.messaging.event.order.OrderValidatedEvent;
 import com.tea.common.messaging.event.order.ValidateOrderEvent;
@@ -35,6 +36,7 @@ import java.util.UUID;
 
 import static com.tea.common.messaging.AmqpOrderProcessingConfig.ORDER_ALLOCATION_QUEUE;
 import static com.tea.common.messaging.AmqpOrderProcessingConfig.ORDER_ALLOCATION_RESULT_ROUTING_KEY;
+import static com.tea.common.messaging.AmqpOrderProcessingConfig.ORDER_CANCEL_QUEUE;
 import static com.tea.common.messaging.AmqpOrderProcessingConfig.ORDER_PROCESSING_EXCHANGE;
 import static com.tea.common.messaging.AmqpOrderProcessingConfig.ORDER_VALIDATION_QUEUE;
 import static com.tea.common.messaging.AmqpOrderProcessingConfig.ORDER_VALIDATION_RESULT_ROUTING_KEY;
@@ -238,6 +240,39 @@ class OrderCoordinatorServiceIT {
         Assertions.assertTrue(CollectionUtils.isNotEmpty(lastOrder.getOrderLines()));
         for (var line : lastOrder.getOrderLines()) {
             Assertions.assertEquals(line.getOrderQuantity() / 2, line.getQuantityAllocated() );
+        }
+    }
+
+    @Test
+    void coordinatorShouldSendCancelEvent_WhenAllocatedOrderMovingToCancelStatus() {
+        int quantity1 = 7;
+        int quantity2 = 6;
+        TeaOrderLineDto line = orderLine(quantity1);
+        line.setQuantityAllocated(quantity1);
+        TeaOrderLineDto line2 = orderLine(quantity2);
+        line2.setQuantityAllocated(quantity2);
+        TeaOrderDto orderDto = TeaOrderDto.builder()
+                .id(UUID.randomUUID())
+                .orderStatus(OrderStatus.ALLOCATED.name())
+                .orderLines(List.of(line, line2))
+                .build();
+        TeaOrder order = repository.saveAndFlush(teaOrderMapper.toEntity(orderDto));
+
+        coordinatorService.cancel(order.getId());
+
+        Awaitility.await().atMost(3, SECONDS)
+                .until(()-> OrderStatus.CANCELED.equals(repository.currentStatusById(order.getId())));
+
+        var type = new ParameterizedTypeReference<CancelOrderEvent>(){};
+        CancelOrderEvent cancelOrderEvent = amqpTemplate.receiveAndConvert(ORDER_CANCEL_QUEUE, 1000, type);
+        Assertions.assertNotNull(cancelOrderEvent);
+        Assertions.assertNotNull(cancelOrderEvent.orderDto());
+        Assertions.assertEquals(order.getId(), cancelOrderEvent.orderDto().getId());
+        Assertions.assertTrue(CollectionUtils.isNotEmpty(cancelOrderEvent.orderDto().getOrderLines()));
+        for (var orderLine : cancelOrderEvent.orderDto().getOrderLines()) {
+            Assertions.assertNotNull(orderLine.getOrderQuantity());
+            Assertions.assertTrue(orderLine.getOrderQuantity() > 0);
+            Assertions.assertEquals(orderLine.getOrderQuantity(), orderLine.getQuantityAllocated());
         }
     }
 
