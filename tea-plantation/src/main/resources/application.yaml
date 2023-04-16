@@ -19,6 +19,7 @@ mongock:
 
 tea:
   plantation:
+    synchronize-initial-delay: PT1M
     synchronize-with-inventory-duration: PT1M
   inventory:
     host: 'http://localhost:8082'

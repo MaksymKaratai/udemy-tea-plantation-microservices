@@ -22,7 +22,10 @@ public class InventorySynchronizerService {
     private final TeaRepository teaRepository;
     private final InventoryService inventoryService;
 
-    @Scheduled(fixedRateString = "${tea.plantation.synchronize-with-inventory-duration}")
+    @Scheduled(
+        fixedRateString = "${tea.plantation.synchronize-with-inventory-duration}",
+        initialDelayString = "${tea.plantation.synchronize-initial-delay}"
+    )
     public void synchronize() {
         log.debug("Start synchronization with inventory service");
         List<Tea> all = teaRepository.findAll();
