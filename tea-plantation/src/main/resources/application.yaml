@@ -4,6 +4,7 @@ spring:
       uri: mongodb://root:root@localhost:30001/tea-plantation?authSource=admin
       database: tea-plantation
       uuid-representation: standard
+      replica-set-name: rs0
   rabbitmq:
     host: localhost
     port: 31691
@@ -11,7 +12,9 @@ spring:
     password: rab!@#
 
 mongock:
-  transactionEnabled: false
+  mongo-db:
+    read-concern: local
+  transactionEnabled: true
   migration-scan-package: com.tea.plantation.migration
 
 tea:
@@ -27,8 +30,14 @@ logging:
     com:
       tea:
         plantation: debug
+      mongodb: debug
     org:
+      springframework:
+        data:
+          mongodb: debug
       apache:
         hc:
           client5:
             http: info
+    io:
+      mongock: debug

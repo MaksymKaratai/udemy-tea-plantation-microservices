@@ -13,9 +13,15 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ *  When creating an index inside a transaction, the index to create must be on either:
+ *    a non-existing collection. The collection is created as part of the operation.
+ *    a new empty collection created earlier in the same transaction.
+ *  Disable transactions due to that :)
+ */
 @Slf4j
 @RequiredArgsConstructor
-@ChangeUnit(id = "addUUIDForCollections", order = "0001")
+@ChangeUnit(id = "addUUIDForCollections", order = "0001", transactional = false)
 public class AddUUIDForCollections {
     public static final String UUID_FIELD = "uuid";
     public static final String UPC_FIELD = "upc";

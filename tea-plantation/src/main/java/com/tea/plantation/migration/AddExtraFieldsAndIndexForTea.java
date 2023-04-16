@@ -14,7 +14,7 @@ import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
-@ChangeUnit(id = "addExtraFieldsAndIndexForTea", order = "0002")
+@ChangeUnit(id = "addExtraFieldsAndIndexForTea", order = "0002", transactional = false)//disable transactions due to indexes
 public class AddExtraFieldsAndIndexForTea {
     final String UPC_FIELD = "upc";
     final String UUID_FIELD = "uuid";

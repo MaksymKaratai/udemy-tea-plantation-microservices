@@ -4,6 +4,13 @@ global:
   storageClass: "hostpath"
 persistence:
   size: 1Gi
+
+architecture: 'replicaset'
+replicaSetName: 'rs0'
+replicaCount: 1
+arbiter:
+  enabled: false
+
 auth:
   rootPassword: "root"
   usernames:
@@ -12,12 +19,13 @@ auth:
     - "plantation"
   databases:
     - "tea-plantation"
-service:
-  type: NodePort
-  nodePorts:
-    mongodb: "30001"
-#externalAccess:
-#  enabled: true
-#  service:
-#    type: NodePort
-#    nodePorts: ["30001"]
+externalAccess:
+  enabled: true
+  service:
+    type: NodePort
+    nodePorts: ["30001"]
+### for standalone architecture
+#service:
+#  type: NodePort
+#  nodePorts:
+#    mongodb: "30001"
