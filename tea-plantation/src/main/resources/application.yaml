@@ -29,16 +29,16 @@ logging:
   level:
     root: info
     com:
+      mongodb: info
       tea:
         plantation: debug
-      mongodb: debug
     org:
       springframework:
         data:
-          mongodb: debug
+          mongodb: info
       apache:
         hc:
           client5:
             http: info
     io:
-      mongock: debug
+      mongock: info

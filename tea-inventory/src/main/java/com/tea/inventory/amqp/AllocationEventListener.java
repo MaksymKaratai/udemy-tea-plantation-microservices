@@ -15,7 +15,7 @@ import java.util.Objects;
 
 import static com.tea.common.messaging.AmqpOrderProcessingConfig.ORDER_ALLOCATION_QUEUE;
 import static com.tea.common.messaging.AmqpOrderProcessingConfig.ORDER_PROCESSING_EXCHANGE;
-import static com.tea.common.messaging.AmqpOrderProcessingConfig.ORDER_ALLOCATION_ROUTING_KEY;
+import static com.tea.common.messaging.AmqpOrderProcessingConfig.ORDER_ALLOCATION_RESULT_ROUTING_KEY;
 
 @Slf4j
 @Component
@@ -39,6 +39,7 @@ public class AllocationEventListener {
             hasErrors = true;
         }
         var resultEvent = new AllocationResultEvent(teaOrderDto, hasErrors, !fullyAllocated);
-        template.convertAndSend(ORDER_PROCESSING_EXCHANGE, ORDER_ALLOCATION_ROUTING_KEY, resultEvent);
+        template.convertAndSend(ORDER_PROCESSING_EXCHANGE, ORDER_ALLOCATION_RESULT_ROUTING_KEY, resultEvent);
+        log.debug("Sent allocation result event: hasErrors[{}], fullyAllocated[{}]", hasErrors, fullyAllocated);
     }
 }

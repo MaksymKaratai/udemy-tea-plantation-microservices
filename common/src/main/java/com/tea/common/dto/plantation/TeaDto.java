@@ -37,4 +37,10 @@ public class TeaDto implements Identifiable<String> {
 
     @Null // available from inventory service
     private Integer quantityOnHand;
+
+    @Positive
+    private Integer minimalAmountInInventory;
+
+    @Positive
+    private Integer quantityToPackage;
 }

@@ -31,6 +31,7 @@ public class AllocationService {
             int leftToAllocate = tryToAllocateOrderLine(line);
             leftToAllocateForOrder += leftToAllocate;
         }
+        log.debug("Allocation finished, left to allocate = [{}]", leftToAllocateForOrder);
         return leftToAllocateForOrder == 0;
     }
 
@@ -65,6 +66,7 @@ public class AllocationService {
     private void dropOrUpdateInventoryRecord(TeaInventory record) {
         if (record.getQuantityOnHand() == 0) {
             repository.delete(record);
+            return;
         }
         repository.save(record);
     }
