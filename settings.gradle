@@ -2,6 +2,7 @@ rootProject.name = 'plantation'
 
 includeBuild('common')
 includeBuild('gateway')
+includeBuild('discovery')
 includeBuild('tea-plantation')
 includeBuild('tea-order')
 includeBuild('tea-inventory')

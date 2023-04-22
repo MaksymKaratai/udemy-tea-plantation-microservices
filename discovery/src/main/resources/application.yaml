@@ -1,0 +1,26 @@
+server:
+  port: 8761
+spring:
+  application:
+    name: 'discovery'
+  freemarker:
+    template-loader-path: classpath:/templates/
+    prefer-file-system-access: false
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+  environment: plantation
+
+logging:
+  level:
+    root: info
+    com:
+      netflix:
+        eureka: info
+        discovery: info

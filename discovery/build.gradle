@@ -13,6 +13,5 @@ repositories {
 }
 
 dependencies {
-	implementation libs.spring.boot.starter.cloud.gateway
-	implementation libs.spring.boot.starter.cloud.eureka.client
+	implementation libs.spring.boot.starter.cloud.eureka.server
 }

@@ -1,5 +1,11 @@
 server:
   port: 9090
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: false
+    should-unregister-on-shutdown: false
 spring:
   application:
     name: 'gateway'
@@ -7,14 +13,14 @@ spring:
     gateway:
       routes:
         - id: plantation-service
-          uri: http://localhost:8080
+          uri: lb://plantation-service
           predicates:
             - Path=/v1/tea/**
         - id: inventory-service
-          uri: http://localhost:8082
+          uri: lb://inventory-service
           predicates:
             - Path=/v1/inventory/**
         - id: order-service
-          uri: http://localhost:8081
+          uri: lb://order-service
           predicates:
             - Path=/v1/order/**

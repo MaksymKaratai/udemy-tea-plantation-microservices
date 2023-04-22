@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: plantation-service
   data:
     mongodb:
       uri: mongodb://root:root@localhost:30001/tea-plantation?authSource=admin
@@ -10,6 +12,10 @@ spring:
     port: 31691
     username: rabbitmq
     password: rab!@#
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
 
 mongock:
   mongo-db:

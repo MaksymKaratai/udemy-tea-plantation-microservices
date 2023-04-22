@@ -1,3 +1,7 @@
+eureka:
+  client:
+    enabled: false
+
 tea:
   plantation:
     host: 'http://localhost:1236'
