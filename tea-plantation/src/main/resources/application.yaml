@@ -28,6 +28,7 @@ tea:
     synchronize-initial-delay: PT1M
     synchronize-with-inventory-duration: PT1M
   inventory:
+    name: 'inventory-service'
     host: 'http://localhost:8082'
     endpoint: '/v1/inventory/tea/{teaId}'
 

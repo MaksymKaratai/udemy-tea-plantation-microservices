@@ -24,6 +24,7 @@ server:
 
 tea:
   plantation:
+    name: 'plantation-service'
     host: 'http://localhost:8080'
     endpoint: '/v1/tea/uuid/{teaUuid}'
 

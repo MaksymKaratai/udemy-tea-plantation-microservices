@@ -2,8 +2,13 @@ eureka:
   client:
     enabled: false
 
+spring:
+  jpa:
+    open-in-view: false
+
 tea:
   plantation:
+    name: "test-name"
     host: 'http://localhost:1236'
     endpoint: '/v1/tea/uuid/{teaUuid}'
 
