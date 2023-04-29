@@ -6,6 +6,10 @@ eureka:
       defaultZone: http://localhost:8761/eureka/
     register-with-eureka: false
     should-unregister-on-shutdown: false
+management:
+  tracing:
+    sampling:
+      probability: 1.0
 spring:
   application:
     name: 'gateway'

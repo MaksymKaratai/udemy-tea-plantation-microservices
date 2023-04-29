@@ -24,9 +24,14 @@ dependencies {
 	implementation libs.mapstruct
 	implementation libs.commons.lang3
 	implementation libs.commons.collections4
+	implementation libs.feign.micrometer
+	implementation libs.zipkin.reporter.brave
+	implementation libs.micrometer.tracing.bridge
+
 	implementation libs.spring.statemachine.core
 	implementation libs.spring.boot.starter.web
 	implementation libs.spring.boot.starter.amqp
+	implementation libs.spring.boot.starter.actuator
 	implementation libs.spring.boot.starter.data.jpa
 	implementation libs.spring.boot.starter.validation
 	implementation libs.spring.boot.starter.cloud.openfeign

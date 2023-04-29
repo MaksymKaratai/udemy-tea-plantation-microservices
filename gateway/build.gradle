@@ -13,6 +13,10 @@ repositories {
 }
 
 dependencies {
+	implementation libs.spring.boot.starter.actuator
 	implementation libs.spring.boot.starter.cloud.gateway
 	implementation libs.spring.boot.starter.cloud.eureka.client
+
+	implementation libs.zipkin.reporter.brave
+	implementation libs.micrometer.tracing.bridge
 }
