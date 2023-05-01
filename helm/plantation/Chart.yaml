@@ -1,0 +1,14 @@
+version: 0.0.1
+apiVersion: v2
+appVersion: "1.16.0"
+name: plantation
+type: application
+description: A Helm chart for plantation app that represented by several services
+
+dependencies:
+  - name: discovery
+    version: 0.0.1
+    repository: "file://../discovery"
+  - name: gateway
+    version: 0.0.1
+    repository: "file://../gateway"

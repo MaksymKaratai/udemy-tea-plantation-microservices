@@ -1,12 +1,16 @@
 server:
-  port: 8761
+  port: ${SERVER_PORT:8761}
 spring:
   application:
     name: 'discovery'
   freemarker:
     template-loader-path: classpath:/templates/
     prefer-file-system-access: false
-
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
 eureka:
   instance:
     hostname: localhost

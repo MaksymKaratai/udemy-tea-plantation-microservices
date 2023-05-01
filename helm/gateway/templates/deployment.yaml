@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "gateway.fullname" . }}
+  labels:
+    {{- include "gateway.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "gateway.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "gateway.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: http
+            initialDelaySeconds: 7
+            periodSeconds: 7
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: http
+            initialDelaySeconds: 7
+            periodSeconds: 7
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          env:
+            - name: SERVICE_PORT
+              value: {{ quote  .Values.service.port }}
+            - name: EUREKA_HOST
+              value: {{ .Values.discovery.eurecaHost}}
+            - name: EUREKA_PORT
+              value: {{ quote .Values.discovery.eurecaPort }}
+            - name: TRACING_ENABLED
+              value: {{ quote .Values.tracing.enabled }}

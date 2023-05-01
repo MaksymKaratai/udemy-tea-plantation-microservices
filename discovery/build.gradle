@@ -13,5 +13,6 @@ repositories {
 }
 
 dependencies {
+	implementation libs.spring.boot.starter.actuator
 	implementation libs.spring.boot.starter.cloud.eureka.server
 }

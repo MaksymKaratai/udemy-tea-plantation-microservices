@@ -1,0 +1,28 @@
+replicaCount: 1
+image:
+  repository: tea-discovery
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  createNodePort: true
+  port: 8761
+
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+# runAsUser: 1000

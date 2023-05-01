@@ -1,0 +1,6 @@
+version: 0.0.1
+apiVersion: v2
+appVersion: "0.0.1"
+name: gateway
+type: application
+description: Chart for Spring Cloud Gateway
