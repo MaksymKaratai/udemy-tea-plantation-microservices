@@ -7,9 +7,6 @@ image:
 nameOverride: ""
 fullnameOverride: ""
 
-discovery:
-  eurecaHost: "plantation-discovery-cluster"
-  eurecaPort: 8761
 tracing:
   enabled: true
 

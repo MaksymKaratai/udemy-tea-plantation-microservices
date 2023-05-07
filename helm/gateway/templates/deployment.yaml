@@ -42,8 +42,8 @@ spec:
             - name: SERVICE_PORT
               value: {{ quote  .Values.service.port }}
             - name: EUREKA_HOST
-              value: {{ .Values.discovery.eurecaHost}}
+              value: {{ .Values.global.discovery.serviceName }}
             - name: EUREKA_PORT
-              value: {{ quote .Values.discovery.eurecaPort }}
+              value: {{ quote .Values.global.discovery.port }}
             - name: TRACING_ENABLED
               value: {{ quote .Values.tracing.enabled }}

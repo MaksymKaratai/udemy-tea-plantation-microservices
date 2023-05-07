@@ -22,7 +22,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: {{ .Values.service.port }}
+              containerPort: {{ .Values.global.discovery.port }}
               protocol: TCP
           livenessProbe:
             httpGet:
@@ -40,4 +40,4 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
             - name: SERVICE_PORT
-              value: {{ quote .Values.service.port }}
+              value: {{ quote .Values.global.discovery.port }}

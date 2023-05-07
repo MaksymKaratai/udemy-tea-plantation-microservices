@@ -10,7 +10,6 @@ fullnameOverride: ""
 
 service:
   createNodePort: true
-  port: 8761
 
 resources: {}
   # limits:
