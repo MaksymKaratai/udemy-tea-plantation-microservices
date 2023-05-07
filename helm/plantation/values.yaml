@@ -3,3 +3,7 @@ global:
   discovery:
     port: 8761
     serviceName: discovery-eureka-service
+
+gateway:
+  tracing:
+    enabled: false

@@ -60,3 +60,7 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{- define "discovery.url" -}}
+{{- printf "%s:%d" .Values.global.discovery.serviceName (.Values.global.discovery.port | int) -}}
+{{- end -}}
