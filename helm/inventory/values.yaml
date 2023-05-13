@@ -1,0 +1,29 @@
+replicaCount: 1
+image:
+  repository: tea-inventory
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+nameOverride: ""
+fullnameOverride: ""
+
+tracing:
+  enabled: false
+
+service:
+  port: 8082
+
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+# runAsNonRoot: true
+# runAsUser: 1000

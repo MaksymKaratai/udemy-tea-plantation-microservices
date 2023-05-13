@@ -12,3 +12,6 @@ dependencies:
   - name: gateway
     version: 0.0.1
     repository: "file://../gateway"
+  - name: inventory
+    version: 0.0.1
+    repository: "file://../inventory"
