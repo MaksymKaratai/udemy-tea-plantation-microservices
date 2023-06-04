@@ -1,9 +1,9 @@
-version: 0.0.1
+version: 0.0.2
 apiVersion: v2
 appVersion: "1.16.0"
-name: plantation
+name: tea-plantation
 type: application
-description: A Helm chart for plantation app that represented by several services
+description: A Helm chart for tea plantation app that represented by several services
 
 dependencies:
   - name: discovery
@@ -15,3 +15,6 @@ dependencies:
   - name: inventory
     version: 0.0.1
     repository: "file://../inventory"
+  - name: plantation
+    version: 0.0.1
+    repository: "file://../plantation"
