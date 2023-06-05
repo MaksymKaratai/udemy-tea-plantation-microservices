@@ -5,3 +5,7 @@
 - `Distributor` - re-stocks tea to `Tea Shops`, orders tea from `Tea Plantation`
 - `Tea Plantation` - grows tea, supplies tea to `Distributor` 
 
+Next steps:
+- add ingress controller
+- make gradle automation for image building + layered images
+- add open-api dock with examples

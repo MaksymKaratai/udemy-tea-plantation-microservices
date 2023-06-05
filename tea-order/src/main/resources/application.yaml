@@ -6,25 +6,28 @@ spring:
     hibernate:
       ddl-auto: none
   datasource:
-    url: jdbc:postgresql://localhost:30002/tea?currentSchema=order-service
+    url: jdbc:postgresql://${DB_ADDRESS:localhost:30002}/tea?currentSchema=order-service
     username: order-user
     password: ord!@#
   rabbitmq:
-    host: localhost
-    port: 31691
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:31691}
     username: rabbitmq
     password: rab!@#
 eureka:
+  instance:
+    prefer-ip-address: true # for k8s correct work
   client:
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://${EUREKA_HOST:localhost}:${EUREKA_PORT:8761}/eureka/
 management:
   tracing:
+    enabled: ${TRACING_ENABLED:true}
     sampling:
       probability: 1.0
 
 server:
-  port: 8081
+  port: ${SERVER_PORT:8081}
 
 tea:
   plantation:

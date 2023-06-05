@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "order.fullname" . }}
+  labels:
+    {{- include "order.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "order.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "order.selectorLabels" . | nindent 8 }}
+    spec:
+      initContainers:
+        {{- include "common.wait.discovery.init.container" . | nindent 8 }}
+        {{- include "common.wait.postgres.init.container" . | nindent 8 }}
+        {{- include "common.wait.rabbitmq.init.container" . | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: http
+            initialDelaySeconds: 7
+            periodSeconds: 7
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: http
+            initialDelaySeconds: 7
+            periodSeconds: 7
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          env:
+            - name: SERVICE_PORT
+              value: {{ quote  .Values.service.port }}
+            - name: EUREKA_HOST
+              value: {{ .Values.global.discovery.serviceName }}
+            - name: EUREKA_PORT
+              value: {{ quote .Values.global.discovery.port }}
+            - name: RABBITMQ_HOST
+              value: {{ .Values.global.rabbitmq.host }}
+            - name: RABBITMQ_PORT
+              value: {{ quote .Values.global.rabbitmq.port }}
+            - name: DB_ADDRESS
+              value: {{ include "postgres.url" . }}
+            - name: TRACING_ENABLED
+              value: {{ quote .Values.tracing.enabled }}

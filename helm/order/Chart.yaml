@@ -1,0 +1,6 @@
+version: 0.0.1
+apiVersion: v2
+appVersion: "0.0.1"
+name: order
+type: application
+description: Chart for order service

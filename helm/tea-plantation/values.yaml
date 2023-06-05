@@ -22,3 +22,6 @@ inventory:
 plantation:
   tracing:
     enabled: false
+order:
+  tracing:
+    enabled: false
