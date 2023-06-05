@@ -1,0 +1,17 @@
+{{- if .Values.debug }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ printf "%s-%s" (include "plantation.fullname" .) "debug" }}
+  labels:
+    {{- include "plantation.labels" . | nindent 4 }}
+spec:
+  type: NodePort
+  ports:
+    - port: 8787
+      targetPort: debug
+      protocol: TCP
+      name: debug
+  selector:
+    {{- include "plantation.selectorLabels" . | nindent 4 }}
+{{- end }}

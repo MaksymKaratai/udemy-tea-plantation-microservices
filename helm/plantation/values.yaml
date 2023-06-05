@@ -1,0 +1,33 @@
+replicaCount: 1
+
+image:
+  repository: tea-plantation
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+nameOverride: ""
+fullnameOverride: ""
+
+tracing:
+  enabled: false
+service:
+  port: 8080
+debug: true
+
+inventory:
+  syncDuration: "PT40S"
+
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+#   memory: 128Mi
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+# readOnlyRootFilesystem: true
+# runAsNonRoot: true
+# runAsUser: 1000

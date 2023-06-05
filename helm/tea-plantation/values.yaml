@@ -9,11 +9,16 @@ global:
   rabbitmq:
     port: 5672
     host: rabbitmq.rabbitmq.svc.cluster.local
-#    add inventory service, before it containers to wait for psql and rabbitmq
+  mongodb:
+    port: 27017
+    host: mongo-mongodb-headless.mongo.svc.cluster.local
 
 gateway:
   tracing:
     enabled: false
 inventory:
+  tracing:
+    enabled: false
+plantation:
   tracing:
     enabled: false

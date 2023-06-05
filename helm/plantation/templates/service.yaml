@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "inventory.fullname" . }}
+  name: {{ include "plantation.fullname" . }}
   labels:
-    {{- include "inventory.labels" . | nindent 4 }}
+    {{- include "plantation.labels" . | nindent 4 }}
 spec:
   type: ClusterIP
   ports:
@@ -12,4 +12,4 @@ spec:
       protocol: TCP
       name: http
   selector:
-    {{- include "inventory.selectorLabels" . | nindent 4 }}
+    {{- include "plantation.selectorLabels" . | nindent 4 }}

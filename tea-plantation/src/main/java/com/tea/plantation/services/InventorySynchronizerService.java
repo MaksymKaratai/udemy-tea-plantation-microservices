@@ -35,6 +35,7 @@ public class InventorySynchronizerService {
             }
             catch (Exception ex) {
                 log.warn("Unable to make synchronization with inventory for tea with uuid[{}] due to [{}]", tea.getUuid(), ex.getMessage());
+                log.warn("Got exception", ex);
             }
         }
         log.debug("Finished synchronization with inventory service");

@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "inventory.fullname" . }}
+  name: {{ include "plantation.fullname" . }}
   labels:
-    {{- include "inventory.labels" . | nindent 4 }}
+    {{- include "plantation.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "inventory.selectorLabels" . | nindent 6 }}
+      {{- include "plantation.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "inventory.selectorLabels" . | nindent 8 }}
+        {{- include "plantation.selectorLabels" . | nindent 8 }}
     spec:
       initContainers:
         {{- include "common.wait.discovery.init.container" . | nindent 8 }}
-        {{- include "common.wait.postgres.init.container" . | nindent 8 }}
+        {{- include "common.wait.mongodb.init.container" . | nindent 8 }}
         {{- include "common.wait.rabbitmq.init.container" . | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
@@ -28,21 +28,36 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+          {{if .Values.debug }}
+            - name: debug
+              containerPort: 8787
+              protocol: TCP
+          {{ end }}
           livenessProbe:
             httpGet:
               path: /actuator/health/liveness
               port: http
-            initialDelaySeconds: 7
+            initialDelaySeconds: 10
             periodSeconds: 7
+            {{if .Values.debug}}
+            failureThreshold: 200
+            {{ end }}
           readinessProbe:
             httpGet:
               path: /actuator/health/readiness
               port: http
-            initialDelaySeconds: 7
+            initialDelaySeconds: 10
             periodSeconds: 7
+            {{if .Values.debug}}
+            failureThreshold: 200
+            {{ end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
+            {{if .Values.debug}}
+            - name: JAVA_OPTS
+              value: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8787"
+            {{end}}
             - name: SERVICE_PORT
               value: {{ quote  .Values.service.port }}
             - name: EUREKA_HOST
@@ -53,7 +68,10 @@ spec:
               value: {{ .Values.global.rabbitmq.host }}
             - name: RABBITMQ_PORT
               value: {{ quote .Values.global.rabbitmq.port }}
-            - name: DB_ADDRESS
-              value: {{ include "postgres.url" . }}
+            - name: MONGODB_ADDRESS
+              value: {{ include "mongodb.url" . }}
             - name: TRACING_ENABLED
               value: {{ quote .Values.tracing.enabled }}
+            - name: SYNC_DURATION
+              value: {{ .Values.inventory.syncDuration }}
+

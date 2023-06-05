@@ -3,21 +3,24 @@ spring:
     name: plantation-service
   data:
     mongodb:
-      uri: mongodb://root:root@localhost:30001/tea-plantation?authSource=admin
+      uri: mongodb://root:root@${MONGODB_ADDRESS:localhost:30001}/tea-plantation?authSource=admin
       database: tea-plantation
       uuid-representation: standard
       replica-set-name: rs0
   rabbitmq:
-    host: localhost
-    port: 31691
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:31691}
     username: rabbitmq
     password: rab!@#
 eureka:
+  instance:
+    prefer-ip-address: true # for k8s correct work
   client:
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://${EUREKA_HOST:localhost}:${EUREKA_PORT:8761}/eureka/
 management:
   tracing:
+    enabled: ${TRACING_ENABLED:true}
     sampling:
       probability: 1.0
 
@@ -29,8 +32,8 @@ mongock:
 
 tea:
   plantation:
-    synchronize-initial-delay: PT1M
-    synchronize-with-inventory-duration: PT1M
+    synchronize-initial-delay: ${SYNC_INITIAL_DELAY:PT1M}
+    synchronize-with-inventory-duration: ${SYNC_DURATION:PT5M}
   inventory:
     name: 'inventory-service'
     host: 'http://localhost:8082'
