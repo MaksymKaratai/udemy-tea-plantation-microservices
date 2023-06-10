@@ -22,7 +22,7 @@ eureka:
       defaultZone: http://${EUREKA_HOST:localhost}:${EUREKA_PORT:8761}/eureka/
 management:
   tracing:
-    enabled: ${TRACING_ENABLED:true}
+    enabled: ${TRACING_ENABLED:false}
     sampling:
       probability: 1.0
 

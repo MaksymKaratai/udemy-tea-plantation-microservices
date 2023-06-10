@@ -28,6 +28,7 @@ dependencies {
 	implementation libs.spring.boot.starter.data.mongodb
 	implementation libs.spring.boot.starter.cloud.openfeign
 	implementation libs.spring.boot.starter.cloud.eureka.client
+	implementation libs.springdoc.openapi.starter.webmvc.api
 
 	implementation platform(libs.mongock.bom)
 	implementation libs.mongock.springboot

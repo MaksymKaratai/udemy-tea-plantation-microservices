@@ -12,9 +12,26 @@ management:
       probes:
         enabled: true
   tracing:
-    enabled: ${TRACING_ENABLED:true}
+    enabled: ${TRACING_ENABLED:false}
     sampling:
       probability: 1.0
+logging:
+  level:
+    root: info
+
+springdoc:
+  swagger-ui:
+    urls:
+      - url: /v3/api-docs/plantation
+        name: plantation-api
+        display-name: Plantation service
+      - url: /v3/api-docs/order
+        name: order-api
+        display-name: Order service
+      - url: /v3/api-docs/inventory
+        name: inventory-api
+        display-name: Inventory service
+
 spring:
   application:
     name: 'gateway'
@@ -25,11 +42,31 @@ spring:
           uri: lb://plantation-service
           predicates:
             - Path=/v1/tea/**
+        - id: plantation-openapi
+          uri: lb://plantation-service
+          predicates:
+            - Path=/v3/api-docs/plantation
+          filters:
+            - RewritePath=/v3/api-docs/plantation, /v3/api-docs
+
         - id: inventory-service
           uri: lb://inventory-service
           predicates:
             - Path=/v1/inventory/**
+        - id: inventory-openapi
+          uri: lb://inventory-service
+          predicates:
+            - Path=/v3/api-docs/inventory
+          filters:
+            - RewritePath=/v3/api-docs/inventory, /v3/api-docs
+
         - id: order-service
           uri: lb://order-service
           predicates:
             - Path=/v1/order/**
+        - id: order-openapi
+          uri: lb://order-service
+          predicates:
+            - Path=/v3/api-docs/order
+          filters:
+            - RewritePath=/v3/api-docs/order, /v3/api-docs

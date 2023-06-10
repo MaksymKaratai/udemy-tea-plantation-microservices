@@ -8,4 +8,3 @@
 Next steps:
 - add ingress controller
 - make gradle automation for image building + layered images
-- add open-api dock with examples

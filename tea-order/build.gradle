@@ -36,6 +36,7 @@ dependencies {
 	implementation libs.spring.boot.starter.validation
 	implementation libs.spring.boot.starter.cloud.openfeign
 	implementation libs.spring.boot.starter.cloud.eureka.client
+	implementation libs.springdoc.openapi.starter.webmvc.api
 
 	runtimeOnly libs.flyway
 	runtimeOnly libs.postgresql

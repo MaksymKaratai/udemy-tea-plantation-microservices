@@ -1,6 +1,7 @@
 [versions]
 mapstruct-version = '1.5.3.Final'
 eureka-version = '4.0.1'
+springdoc-version = '2.1.0'
 
 [libraries]
 lombok = { module = 'org.projectlombok:lombok' }
@@ -32,6 +33,8 @@ spring-boot-starter-cloud-gateway = { module = 'org.springframework.cloud:spring
 spring-boot-starter-cloud-openfeign = { module = 'org.springframework.cloud:spring-cloud-starter-openfeign', version = '4.0.2' }
 spring-boot-starter-cloud-eureka-server = { module = 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-server', version.ref = 'eureka-version' }
 spring-boot-starter-cloud-eureka-client = { module = 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client', version.ref = 'eureka-version' }
+springdoc-openapi-starter-webmvc-api = { module = 'org.springdoc:springdoc-openapi-starter-webmvc-api', version.ref = 'springdoc-version' }
+springdoc-openapi-starter-webflux-ui = { module = 'org.springdoc:springdoc-openapi-starter-webflux-ui', version.ref = 'springdoc-version' }
 
 mongock-bom = { module = 'io.mongock:mongock-bom', version = '5.2.2' }
 mongock-springboot = { module = 'io.mongock:mongock-springboot-v3' }
