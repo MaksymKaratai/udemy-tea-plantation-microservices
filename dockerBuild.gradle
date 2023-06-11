@@ -1,0 +1,4 @@
+tasks.register('dockerBuild', Exec) {
+    dependsOn('assemble')
+    commandLine "docker", "build", "-t", "${project.name}:${project.version}", "."
+}

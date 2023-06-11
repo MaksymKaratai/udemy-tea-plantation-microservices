@@ -4,6 +4,8 @@ plugins {
 	alias libs.plugins.spring.dependency.management
 }
 
+apply from: file('../dockerBuild.gradle')
+
 group = 'com.tea'
 version = '0.0.1'
 sourceCompatibility = '17'
