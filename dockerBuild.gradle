@@ -1,4 +1,15 @@
 tasks.register('dockerBuild', Exec) {
     dependsOn('assemble')
-    commandLine "docker", "build", "-t", "${project.name}:${project.version}", "."
+    commandLine "docker", "build", "-t", "${project.name}:${project.version}",
+            "--build-arg", "LAYERS_DIR=./${project.name}/build/layers",  "${projectDir.parent}"
+
+    doFirst { //prepare layers
+        def layersDir = project.layout.buildDirectory.dir('layers').get().asFile
+        mkdir(layersDir)
+        def bootJar = tasks.named('bootJar', Jar).get().archiveFile.get().asFile
+        exec {
+            commandLine "java", "-Djarmode=layertools", "-jar", "${bootJar.toString()}",
+                    "extract", "--destination", "${layersDir.toString()}"
+        }
+    }
 }
