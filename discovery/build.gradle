@@ -9,6 +9,7 @@ apply from: file('../dockerBuild.gradle')
 group = 'com.tea'
 version = '0.0.2'
 sourceCompatibility = '17'
+project.ext.imageName = 'tea-discovery'
 
 repositories {
 	mavenCentral()

@@ -7,17 +7,17 @@ description: A Helm chart for tea plantation app that represented by several ser
 
 dependencies:
   - name: discovery
-    version: 0.0.1
+    version: 0.0.2
     repository: "file://../discovery"
   - name: gateway
-    version: 0.0.1
+    version: 0.0.2
     repository: "file://../gateway"
   - name: inventory
-    version: 0.0.1
+    version: 0.0.2
     repository: "file://../inventory"
   - name: plantation
-    version: 0.0.1
+    version: 0.0.2
     repository: "file://../plantation"
   - name: order
-    version: 0.0.1
+    version: 0.0.2
     repository: "file://../order"

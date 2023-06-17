@@ -1,6 +1,8 @@
 tasks.register('dockerBuild', Exec) {
     dependsOn('assemble')
-    commandLine "docker", "build", "-t", "${project.name}:${project.version}",
+    def imageName = project.ext.imageName == null ? project.name : project.ext.imageName
+
+    commandLine "docker", "build", "-t", "${imageName}:${project.version}",
             "--build-arg", "LAYERS_DIR=./${project.name}/build/layers",  "${projectDir.parent}"
 
     doFirst { //prepare layers
