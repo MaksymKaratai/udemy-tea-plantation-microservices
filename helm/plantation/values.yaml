@@ -12,7 +12,7 @@ tracing:
   enabled: false
 service:
   port: 8080
-debug: true
+debug: false
 
 inventory:
   syncDuration: "PT40S"

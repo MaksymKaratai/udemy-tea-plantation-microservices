@@ -62,3 +62,34 @@
               sleep 0.5; done;'
   ]
 {{- end -}}
+
+{{- define "main.name" -}}
+{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{/*
+Create chart name and version as used by the chart label.
+*/}}
+{{- define "main.chart" -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{/*
+Common labels
+*/}}
+{{- define "main.labels" -}}
+helm.sh/chart: {{ include "main.chart" . }}
+{{ include "main.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+{{/*
+Selector labels
+*/}}
+{{- define "main.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "main.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}

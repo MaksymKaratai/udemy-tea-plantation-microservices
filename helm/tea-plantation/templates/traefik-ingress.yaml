@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tea-plantation-ingress
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+  labels:
+    {{- include "main.labels" . | nindent 4 }}
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: plantation-gateway-cluster
+                port:
+                  name: http
